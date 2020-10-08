@@ -1,18 +1,15 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
+// Importing QueryBuilderModule from ej2-angular-querybuilder package.
+import { QueryBuilderModule } from '@syncfusion/ej2-angular-querybuilder';
+import { DialogModule } from '@syncfusion/ej2-angular-popups';
 import { AppComponent } from './app.component';
+import { RuleComponent } from './rule/rule.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [],
+  imports: [BrowserModule, QueryBuilderModule, DialogModule], // Declaration of QueryBuilder module into NgModule.
+  declarations: [AppComponent, RuleComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

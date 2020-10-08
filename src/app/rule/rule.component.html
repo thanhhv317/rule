@@ -1,0 +1,13 @@
+<!-- To render Query Builder. -->
+<ejs-querybuilder #querybuilder class="row" width="70%" [dataSource]="data" [rule]="importRules">
+    <e-columns>
+      <e-column field="TaskID" label="Task ID" type="number"></e-column>
+      <e-column field="Name" label="Name" type="string"></e-column>
+      <e-column field="Category" label="Category" type="string"></e-column>
+      <e-column field="SerialNo" label="SerialNo" type="string"></e-column>
+      <e-column field="InvoiceNo" label="InvoiceNo" type="string"></e-column>
+      <e-column field="Status" label="Status" type="string"></e-column>
+    </e-columns>
+  </ejs-querybuilder>
+  <button class="e-btn e-primary e-qbr-button" (click)="getJson()" >Get Json</button>
+<ejs-dialog #dialog [header]="promptHeader" [animationSettings]="animationSettings" [showCloseIcon]='showCloseIcon' [height]="height" [width]="width" [visible]="hidden"></ejs-dialog>
