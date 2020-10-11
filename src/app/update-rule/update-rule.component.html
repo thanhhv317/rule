@@ -1,0 +1,92 @@
+<!-- To render Query Builder. -->
+<div class="container">
+  <div *ngIf="currentRule.name !== undefined">
+    <h4>Rule information</h4>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Rule Name</label>
+      <div class="col-sm-10">
+        <input type="text" name="name" value="{{currentRule.name}}" class="form-control" (change)="onChange($event)">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Description</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" name="description" (change)="onChange($event)"></textarea>
+      </div>
+    </div>
+    <fieldset class="form-group">
+      <div class="row">
+        <legend class="col-form-label col-sm-2 pt-0">Stauts</legend>
+        <div class="col-sm-10">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="ACTIVE" (change)="onChange($event)" checked>
+            <label class="form-check-label">
+              Active
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="INACTIVE" (change)="onChange($event)">
+            <label class="form-check-label">
+              Inactive
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">From</label>
+      <div class="col-sm-4">
+        <input type="datetime-local" name="from" class="form-control" (change)="onChange($event)" value="{{info.from}}">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">To</label>
+      <div class="col-sm-4">
+        <input type="datetime-local" name="to" class="form-control" (change)="onChange($event)" value="{{info.to}}">
+      </div>
+    </div>
+    <h4>Conditions</h4>
+    <div class="form-group row">
+      <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules">
+        <e-columns>
+          <e-column field="TaskID" label="Task ID" type="number"></e-column>
+          <e-column field="Name" label="Name" type="string"></e-column>
+          <e-column field="Category" label="Category" type="string"></e-column>
+          <e-column field="SerialNo" label="SerialNo" type="string"></e-column>
+          <e-column field="InvoiceNo" label="InvoiceNo" type="string"></e-column>
+          <e-column field="Status" label="Status" type="string"></e-column>
+        </e-columns>
+      </ejs-querybuilder>
+      
+      
+    </div>
+    <h4>Actions</h4>
+    <div class="form-group row">
+      <label class="col-sm-4 col-form-label">Apply</label>
+      <div class="col-sm-8">
+        <select class="form-control" name="apply" (change)="onChangeEvent($event)">
+          <option value="percentage of original">percentage of original</option>
+          <option value="fixed amount">fixed amount</option>
+          <option value="final price to this percentage">final price to this percentage</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 col-form-label">Discount Amount</label>
+      <div class="col-sm-8">
+        <input name="discount_amout" type="text" (change)="onChangeEvent($event)" class="form-control">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 col-form-label"> Discard subsequent rules</label>
+      <div class="col-sm-8">
+        <select name="discard_subsequent" (change)="onChangeEvent($event)" class="form-control">
+          <option value="YES">YES</option>
+          <option value="NO">NO</option>
+        </select>
+      </div>
+    </div>
+    <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
+  </div>
+  </div>
+  

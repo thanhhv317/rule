@@ -1,0 +1,7 @@
+table#DataTables_Table_0 {
+    width: 100% !important;
+}
+
+::ng-deep table.dataTable td.dataTables_empty {
+    display: none;
+}

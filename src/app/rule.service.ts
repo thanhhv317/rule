@@ -16,13 +16,18 @@ export class RuleService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public sendGetRequest(){
-    return this.httpClient.get(this.REST_API_SERVER + '/rule/all').pipe(catchError(this.handleError));
+  public addData(rule: Rule): Observable<Rule> {
+    return this.httpClient.post<Rule>(this.REST_API_SERVER + '/rule/create', rule, this.httpOptions).pipe(catchError(this.handleError));
   }
 
-  public addData(rule: Rule): Observable<Rule> {
-    return this.httpClient.post<Rule>(this.REST_API_SERVER+'/rule/create',rule, this.httpOptions).pipe(catchError(this.handleError));
+  public updateData(ruleId: string, rule: any): Observable<any> {
+    return this.httpClient.put(this.REST_API_SERVER + '/rule/update?ruleID=' + ruleId, rule, this.httpOptions);
   }
+
+  public getRule(ruleId: string): Observable<Rule> {
+    return this.httpClient.get<Rule>(this.REST_API_SERVER+'/rule/' + ruleId, this.httpOptions).pipe();
+  }
+
 
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'Unknown error!';

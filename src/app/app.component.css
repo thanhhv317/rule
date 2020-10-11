@@ -1,0 +1,12 @@
+.title-text {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.65rem;
+}
+
+.title-icon {
+    text-align: center;
+    background-color: #00e676;
+
+    height: 65px;
+}

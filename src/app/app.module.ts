@@ -12,12 +12,12 @@ import { AppComponent } from './app.component';
 import { RuleComponent } from './rule/rule.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ListComponent } from './list/list.component';
-import { ServerSideAngularWayComponent } from './server-side-angular-way/server-side-angular-way.component';
+import { UpdateRuleComponent } from './update-rule/update-rule.component';
 
 @NgModule({
   imports: [BrowserModule, QueryBuilderModule, DialogModule,
     AppRoutingModule, HttpClientModule, DataTablesModule], // Declaration of QueryBuilder module into NgModule.
-  declarations: [AppComponent, RuleComponent, ListComponent, ServerSideAngularWayComponent],
+  declarations: [AppComponent, RuleComponent, ListComponent, UpdateRuleComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

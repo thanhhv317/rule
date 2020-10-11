@@ -1,1 +1,36 @@
-<p>list works!</p>
+<div class="container">
+  <div class="table-responsive">
+    <table datatable [dtOptions]="dtOptions" class="row-border hover" style="width: 100%;">
+        <thead>
+          <tr>
+            <th>Rule name</th>
+            <th>Description</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="rules?.length != 0">
+            <tr *ngFor="let rule of rules">
+                <td>{{ rule.name }}</td>
+                <td>{{ rule.description }}</td>
+                <td>{{ rule.from }}</td>
+                <td>{{ rule.to }}</td>
+                <td>{{ rule.status }}</td>
+                <td>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <a routerLink="/detail/{{rule._id}}" class="btn btn-primary" >Update</a>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                  </div>
+                </td>
+            </tr>
+        </tbody>
+        <tbody *ngIf="rules?.length == 0">
+          <tr>
+            <td colspan="3" class="no-data-available">No data!</td>
+          </tr>
+        <tbody>
+      </table>
+    </div>
+    </div>
