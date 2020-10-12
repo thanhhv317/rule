@@ -28,6 +28,10 @@ export class RuleService {
     return this.httpClient.get<Rule>(this.REST_API_SERVER+'/rule/' + ruleId, this.httpOptions).pipe();
   }
 
+  public deleteRule(ruleID: string): Observable<any> {
+    return this.httpClient.delete<Rule>(this.REST_API_SERVER + '/rule?ruleID=' + ruleID, this.httpOptions);
+  }
+
 
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'Unknown error!';

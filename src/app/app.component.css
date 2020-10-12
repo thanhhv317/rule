@@ -6,7 +6,12 @@
 
 .title-icon {
     text-align: center;
-    background-color: #00e676;
+    background-color: #00c853;
 
     height: 65px;
 }
+
+.footer {
+    height: 30px;
+}
+

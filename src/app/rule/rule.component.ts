@@ -1,11 +1,10 @@
-
-
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { RuleModel, QueryBuilderComponent } from '@syncfusion/ej2-angular-querybuilder';
 import { DialogComponent } from '@syncfusion/ej2-angular-popups';
 import { hardwareData } from './datasource';
 import { RuleService } from '../rule.service';
 import { Rule } from '../interfaces/rule';
+import { NotifierService } from "angular-notifier";
 
 @Component({
   selector: 'app-rule',
@@ -29,12 +28,14 @@ export class RuleComponent implements OnInit {
 
   // event
   action = {
-    apply: '',
-    discount_amout: '',
-    discard_subsequent: 'YES',
+    discount_amout: 0,
   }
 
-  constructor(private ruleService: RuleService) { }
+  private readonly notifier: NotifierService;
+
+  constructor(private ruleService: RuleService, notifierService: NotifierService) { 
+    this.notifier = notifierService; 
+  }
 
   @ViewChild('querybuilder')
   public qryBldrObj: QueryBuilderComponent;
@@ -46,46 +47,10 @@ export class RuleComponent implements OnInit {
   public width: string = '0%';
   public height: string = '80%';
   public promptHeader: string = 'Querybuilder Rule';
+
   ngOnInit(): void {
-    this.data = hardwareData;
-
-    this.importRules = {
-      'condition': 'or',
-      'rules': [{
-        'label': 'Category',
-        'field': 'Category',
-        'type': 'string',
-        'operator': 'equal',
-        'value': 'Laptop'
-      },
-      {
-        'condition': 'and',
-        'rules': [{
-          'label': 'Status',
-          'field': 'Status',
-          'type': 'string',
-          'operator': 'notequal',
-          'value': 'Pending'
-        },
-        {
-          'label': 'Task ID',
-          'field': 'TaskID',
-          'type': 'number',
-          'operator': 'equal',
-          'value': 5675
-        }]
-      }]
-    };
-
-    // this.qryBldrObj.setRules(this.importRules);
-
+    // this.data = hardwareData;
   }
-
-  // getListRule(): void {
-  //   this.ruleService.sendGetRequest().subscribe((data: any[]) => {
-  //     console.log(data);
-  //   })
-  // }
 
   onChange(event: any) { // without type info
     let nam = event.target.name;
@@ -98,10 +63,9 @@ export class RuleComponent implements OnInit {
     let val = event.target.value;
     this.action[nam] = val;
     this.info.actions = JSON.stringify({
-      type: this.action.apply,
+      type: "actions of rule",
       params: {
         discount: this.action.discount_amout,
-        status: this.action.discard_subsequent,
       }
     })
   }
@@ -111,12 +75,37 @@ export class RuleComponent implements OnInit {
     this.ruleService
       .addData(rule).subscribe(
         res => {
-          console.log(res);
+          this.notifier.notify("success", "Created successfully!");
+          this.info.name = '';
+          this.info.description = '';
+          this.info.from = '';
+          this.info.to = '';
+          this.action.discount_amout = 0;
         }
       );
   }
 
+  checkNull(field: any, message: string) {
+    if (field) {
+      this.notifier.notify("error", message);
+      return true;
+    }
+    return false;
+  }
+
   getValue(): void {
+    if(this.checkNull(this.info.name === '', "The Name of rule is require")) {
+      return;
+    };
+    if(this.checkNull(this.info.description === '', "The description of rule is require")) {
+      return;
+    };
+    if(this.checkNull(this.info.from ==='' || this.info.to==='', "The field FROM and TO is require!") ) {
+      return;
+    };
+    if(this.checkNull(this.action.discount_amout === 0, "The discount must be > 0")) {
+      return;
+    };
     const parse = (data) => {
       const result = {};
       const o = data.condition === "or" ? "any" : "all";

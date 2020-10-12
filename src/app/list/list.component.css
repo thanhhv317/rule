@@ -5,3 +5,19 @@ table#DataTables_Table_0 {
 ::ng-deep table.dataTable td.dataTables_empty {
     display: none;
 }
+
+.btn-delete {
+    background-color: #97b498;
+}
+
+.btn-update {
+    background-color: #98ee99    ;
+}
+
+.status-active {
+    color: #00c853;
+}
+
+.status-inactive {
+    color: #aeea00;
+}

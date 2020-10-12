@@ -6,7 +6,9 @@ import { hardwareData } from './datasource';
 import { RuleService } from '../rule.service';
 import { Rule } from '../interfaces/rule';
 import { ActivatedRoute } from '@angular/router';
+import { NotifierService } from "angular-notifier";
 
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-update-rule',
@@ -18,27 +20,23 @@ export class UpdateRuleComponent implements OnInit {
   public importRules: RuleModel;
   protected id: string;
 
-  public info: Rule = {
-    name: '',
-    description: '',
-    status: 'ACTIVE',
-    conditions: '',
-    actions: '',
-    from: '',
-    to: '',
-    data: '',
-  };
-  public currentRule = {};
+  public currentRule: Rule;
+  tData: boolean = false;
+  public discount = 0;
 
+  private readonly notifier: NotifierService;
   // event
   action = {
-    apply: '',
     discount_amout: '',
-    discard_subsequent: 'YES',
   }
 
-  constructor(private ruleService: RuleService,
-    private route: ActivatedRoute,) { }
+  constructor(
+    private ruleService: RuleService,
+    notifierService: NotifierService,
+    private route: ActivatedRoute
+  ){
+    this.notifier = notifierService; 
+  }
 
   @ViewChild('querybuilder')
   public qryBldrObj: QueryBuilderComponent;
@@ -52,86 +50,56 @@ export class UpdateRuleComponent implements OnInit {
   public promptHeader: string = 'Querybuilder Rule';
   ngOnInit(): void {
     this.data = hardwareData;
-
-    this.importRules = {
-      'condition': 'or',
-      'rules': [{
-        'label': 'Category',
-        'field': 'Category',
-        'type': 'string',
-        'operator': 'equal',
-        'value': 'Laptop'
-      },
-      {
-        'condition': 'and',
-        'rules': [{
-          'label': 'Status',
-          'field': 'Status',
-          'type': 'string',
-          'operator': 'notequal',
-          'value': 'Pending'
-        },
-        {
-          'label': 'Task ID',
-          'field': 'TaskID',
-          'type': 'number',
-          'operator': 'equal',
-          'value': 5675
-        }]
-      }]
-    };
-
-    // this.qryBldrObj.setRules(this.importRules);
-
     this.id = this.route.snapshot.paramMap.get('id');
-    console.log(this.id)
-
     this.getRule();
-
   }
-
-  // getListRule(): void {
-  //   this.ruleService.sendGetRequest().subscribe((data: any[]) => {
-  //     console.log(data);
-  //   })
-  // }
 
   getRule(): void {
     this.ruleService.getRule(this.id).subscribe((data: any) => {
-      // console.log(data);
       this.currentRule = data;
-      console.log(this.currentRule)
+      this.tData = true;
+      this.currentRule.from = moment(this.currentRule.from).format("YYYY-MM-DDTHH:MM:SS");
+      this.currentRule.to = moment(this.currentRule.to).format("YYYY-MM-DDTHH:MM:SS");
+      let tmp = JSON.parse(this.currentRule.actions);
+      this.discount = tmp.params.discount
+      setTimeout(() => {
+        this.importRules = JSON.parse(this.currentRule.data);
+        this.qryBldrObj.setRules(this.importRules);
+      }, 100)
     })
   }
-
 
   onChange(event: any) { // without type info
     let nam = event.target.name;
     let val = event.target.value;
-    this.info[nam] = val;
+    this.currentRule[nam] = val;
   }
 
   onChangeEvent(event: any) {
     let nam = event.target.name;
     let val = event.target.value;
+    this.discount = val;
     this.action[nam] = val;
-    this.info.actions = JSON.stringify({
-      type: this.action.apply,
+    this.currentRule.actions = JSON.stringify({
+      type: "actions of rule",
       params: {
         discount: this.action.discount_amout,
-        status: this.action.discard_subsequent,
       }
     })
   }
 
-
   updateRule(rule: Rule) {
-    this.ruleService
+    try {
+      this.ruleService
       .updateData(this.id, rule).subscribe(
         res => {
-          console.log(res);
-        }
-      );
+          this.notifier.notify("success", "Successfully Updated!");
+          }
+        );
+    } catch(e) {
+      this.notifier.notify("error", "Whoops, something went wrong. Probably!");
+    }
+   
   }
 
   getValue(): void {
@@ -156,10 +124,10 @@ export class UpdateRuleComponent implements OnInit {
       return result;
     }
     const result = parse({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
-    this.info.conditions = JSON.stringify(result)
-    this.info.data = JSON.stringify({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
-
-    this.updateRule(this.info)
+    this.currentRule.conditions = JSON.stringify(result)
+    this.currentRule.data = JSON.stringify({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
+    this.updateRule(this.currentRule)
+    // console.log(this.currentRule)
   }
 
 }
