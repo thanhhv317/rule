@@ -1,19 +1,19 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { RuleModel, QueryBuilderComponent } from '@syncfusion/ej2-angular-querybuilder';
-import { DialogComponent } from '@syncfusion/ej2-angular-popups';
-import { hardwareData } from './datasource';
 import { RuleService } from '../rule.service';
 import { Rule } from '../interfaces/rule';
 import { NotifierService } from "angular-notifier";
 
 @Component({
   selector: 'app-rule',
-  templateUrl: './rule.component.html'
+  templateUrl: './rule.component.html',
+  styleUrls: ['rule.component.css']
 })
 
 export class RuleComponent implements OnInit {
   public data: Object[];
   public importRules: RuleModel;
+  public isAdd = true;
 
   public info: Rule = {
     name: '',
@@ -33,20 +33,12 @@ export class RuleComponent implements OnInit {
 
   private readonly notifier: NotifierService;
 
-  constructor(private ruleService: RuleService, notifierService: NotifierService) { 
-    this.notifier = notifierService; 
+  constructor(private ruleService: RuleService, notifierService: NotifierService) {
+    this.notifier = notifierService;
   }
 
   @ViewChild('querybuilder')
   public qryBldrObj: QueryBuilderComponent;
-  @ViewChild('dialog')
-  public Dialog: DialogComponent;
-  public animationSettings: Object = { effect: 'Zoom', duration: 400 };
-  public showCloseIcon: Boolean = true;
-  public hidden: Boolean = false;
-  public width: string = '0%';
-  public height: string = '80%';
-  public promptHeader: string = 'Querybuilder Rule';
 
   ngOnInit(): void {
     // this.data = hardwareData;
@@ -69,7 +61,6 @@ export class RuleComponent implements OnInit {
       }
     })
   }
-
 
   addRule(rule: Rule) {
     this.ruleService
@@ -94,16 +85,16 @@ export class RuleComponent implements OnInit {
   }
 
   getValue(): void {
-    if(this.checkNull(this.info.name === '', "The Name of rule is require")) {
+    if (this.checkNull(this.info.name === '', "The name of rule is require")) {
       return;
     };
-    if(this.checkNull(this.info.description === '', "The description of rule is require")) {
+    if (this.checkNull(this.info.description === '', "The description of rule is require")) {
       return;
     };
-    if(this.checkNull(this.info.from ==='' || this.info.to==='', "The field FROM and TO is require!") ) {
+    if (this.checkNull(this.info.from === '' || this.info.to === '', "The field FROM and TO is require!")) {
       return;
     };
-    if(this.checkNull(this.action.discount_amout === 0, "The discount must be > 0")) {
+    if (this.checkNull(this.action.discount_amout === 0 || this.action.discount_amout > 100, "The discount must be >0 && <100")) {
       return;
     };
     const parse = (data) => {
@@ -116,6 +107,13 @@ export class RuleComponent implements OnInit {
           if (data.rules[i].condition) {
             result[o][i] = parse(data.rules[i]);
           } else {
+            // check
+            if (data.rules[i].value === undefined || data.rules[i].value === '') {
+              this.notifier.notify("error", 'The conditions is not correct');
+              this.isAdd = false;
+              return;
+            }
+            this.isAdd = true;
             result[o][i] = {
               fact: data.rules[i].field,
               operator: data.rules[i].operator,
@@ -129,7 +127,8 @@ export class RuleComponent implements OnInit {
     const result = parse({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.info.conditions = JSON.stringify(result)
     this.info.data = JSON.stringify({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
-
-    this.addRule(this.info)
+    if (this.isAdd) {
+      this.addRule(this.info);
+    }
   }
 }

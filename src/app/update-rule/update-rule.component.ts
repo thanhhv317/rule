@@ -1,13 +1,12 @@
 
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { RuleModel, QueryBuilderComponent } from '@syncfusion/ej2-angular-querybuilder';
-import { DialogComponent } from '@syncfusion/ej2-angular-popups';
 import { hardwareData } from './datasource';
 import { RuleService } from '../rule.service';
 import { Rule } from '../interfaces/rule';
 import { ActivatedRoute } from '@angular/router';
 import { NotifierService } from "angular-notifier";
-
+import { Location } from '@angular/common';
 import * as moment from 'moment';
 
 @Component({
@@ -16,38 +15,34 @@ import * as moment from 'moment';
   styleUrls: ['./update-rule.component.css']
 })
 export class UpdateRuleComponent implements OnInit {
+
+  // Level user
+  public level = 1;  // =0 disable update button
   public data: Object[];
   public importRules: RuleModel;
   protected id: string;
-
   public currentRule: Rule;
   tData: boolean = false;
   public discount = 0;
-
   private readonly notifier: NotifierService;
-  // event
+  // Event
   action = {
     discount_amout: '',
   }
+  public isAdd = true;
 
   constructor(
     private ruleService: RuleService,
     notifierService: NotifierService,
-    private route: ActivatedRoute
-  ){
-    this.notifier = notifierService; 
+    private route: ActivatedRoute,
+    private location: Location
+  ) {
+    this.notifier = notifierService;
   }
 
   @ViewChild('querybuilder')
   public qryBldrObj: QueryBuilderComponent;
-  @ViewChild('dialog')
-  public Dialog: DialogComponent;
-  public animationSettings: Object = { effect: 'Zoom', duration: 400 };
-  public showCloseIcon: Boolean = true;
-  public hidden: Boolean = false;
-  public width: string = '0%';
-  public height: string = '80%';
-  public promptHeader: string = 'Querybuilder Rule';
+
   ngOnInit(): void {
     this.data = hardwareData;
     this.id = this.route.snapshot.paramMap.get('id');
@@ -88,21 +83,44 @@ export class UpdateRuleComponent implements OnInit {
     })
   }
 
+  goBack() {
+    this.location.back();
+  }
+
   updateRule(rule: Rule) {
     try {
       this.ruleService
-      .updateData(this.id, rule).subscribe(
-        res => {
-          this.notifier.notify("success", "Successfully Updated!");
+        .updateData(this.id, rule).subscribe(
+          res => {
+            this.notifier.notify("success", "Successfully Updated!");
           }
         );
-    } catch(e) {
+    } catch (e) {
       this.notifier.notify("error", "Whoops, something went wrong. Probably!");
     }
-   
+  }
+
+  checkNull(field: any, message: string) {
+    if (field) {
+      this.notifier.notify("error", message);
+      return true;
+    }
+    return false;
   }
 
   getValue(): void {
+    if (this.checkNull(this.currentRule.name === '', "The name of rule is require")) {
+      return;
+    };
+    if (this.checkNull(this.currentRule.description === '', "The description of rule is require")) {
+      return;
+    };
+    if (this.checkNull(this.currentRule.from === '' || this.currentRule.to === '', "The field FROM and TO is require!")) {
+      return;
+    };
+    if (this.checkNull(this.discount === 0 || this.discount > 100, "The discount must be >0 && <100")) {
+      return;
+    };
     const parse = (data) => {
       const result = {};
       const o = data.condition === "or" ? "any" : "all";
@@ -113,6 +131,13 @@ export class UpdateRuleComponent implements OnInit {
           if (data.rules[i].condition) {
             result[o][i] = parse(data.rules[i]);
           } else {
+            // check
+            if (data.rules[i].value === undefined || data.rules[i].value === '') {
+              this.notifier.notify("error", 'The conditions is not correct');
+              this.isAdd = false;
+              return;
+            }
+            this.isAdd = true;
             result[o][i] = {
               fact: data.rules[i].field,
               operator: data.rules[i].operator,
@@ -126,8 +151,9 @@ export class UpdateRuleComponent implements OnInit {
     const result = parse({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.currentRule.conditions = JSON.stringify(result)
     this.currentRule.data = JSON.stringify({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
-    this.updateRule(this.currentRule)
-    // console.log(this.currentRule)
+    if (this.isAdd) {
+      this.updateRule(this.currentRule)
+    }
   }
 
 }

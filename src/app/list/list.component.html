@@ -1,5 +1,49 @@
 <div class="container">
-  
+  <!-- Begin filter component -->
+  <div class="filter-group pt-3">
+    <div class="col-lg-12 col-md-12 col-12">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-12">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-12">
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">FROM:</label>
+                <div class="col-sm-10">
+                  <input type="datetime-local" name="from" class="form-control" (change)="onChange($event)">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">TO:</label>
+                <div class="col-sm-10">
+                  <input type="datetime-local" name="to" class="form-control" (change)="onChange($event)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12">
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">STATUS:</label>
+            <div class="col-sm-8">
+              <select class="form-control" name="status" (change)="selectChangeHandler($event)">
+                <option *ngFor="let stt of status" [ngValue]="stt.value">
+                  {{ stt.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-12">
+          <button type="button" class="btn btn-success btn-block" (click)="onSearch()">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <!-- end filter component -->
+
   <div class="table-responsive">
     <table datatable [dtOptions]="dtOptions" *ngIf="tData" class="row-border hover" style="width: 100%;">
       <thead>
@@ -14,8 +58,8 @@
       </thead>
       <tbody *ngIf="rules?.length != 0">
         <tr *ngFor="let rule of rules" id="{{rule._id}}">
-          <td>{{ rule.name }}</td>
-          <td>{{ rule.description }}</td>
+          <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.name }}</a></td>
+          <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.description }}</a></td>
           <td>{{ rule.from }}</td>
           <td>{{ rule.to }}</td>
           <td *ngIf="rule.status==='ACTIVE'">
@@ -24,11 +68,12 @@
           <td *ngIf="rule.status==='INACTIVE'">
             <span class="status-inactive">{{ rule.status }}</span>
           </td>
-          
-          
+          <td *ngIf="rule.status==='DELETE'">
+            <span class="status-delete">{{ rule.status }}</span>
+          </td>
           <td>
-              <a routerLink="/detail/{{rule._id}}" class="btn btn-update mr-1">Update</a>
-              <button type="button" class="btn btn-delete" (click)="onDelete(rule._id)">Delete</button>
+            <a routerLink="/update/{{rule._id}}" class="btn btn-update mr-1">Update</a>
+            <button type="button" class="btn btn-delete" (click)="onDelete(rule._id)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -39,5 +84,4 @@
       <tbody>
     </table>
   </div>
-
 </div>

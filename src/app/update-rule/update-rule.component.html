@@ -1,6 +1,10 @@
-<!-- To render Query Builder. -->
 <div class="container">
+  <div class="d-flex flex-row-reverse">
+    <button class="btn btn-success mb-4" (click)="goBack()">BACK</button>
+  </div>
   <div *ngIf="currentRule !== undefined">
+
+    <!-- Begin rule information -->
     <h4>Rule information</h4>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">Rule Name</label>
@@ -11,23 +15,73 @@
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">Description</label>
       <div class="col-sm-10">
-        <textarea class="form-control" name="description" (change)="onChange($event)">{{currentRule.description}}</textarea>
+        <textarea class="form-control" name="description"
+          (change)="onChange($event)">{{currentRule.description}}</textarea>
       </div>
     </div>
     <fieldset class="form-group">
       <div class="row">
-        <legend class="col-form-label col-sm-2 pt-0">Stauts</legend>
-        <div class="col-sm-10">
+        <legend class="col-form-label col-sm-2 pt-0">Status</legend>
+        <div class="col-sm-10" *ngIf="currentRule.status==='ACTIVE'">
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="status" value="ACTIVE" (change)="onChange($event)" checked>
+            <input class="form-check-input" type="radio" name="status" value="ACTIVE" (change)="onChange($event)"
+              checked>
             <label class="form-check-label">
               Active
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="status" value="INACTIVE" (change)="onChange($event)" >
+            <input class="form-check-input" type="radio" name="status" value="INACTIVE" (change)="onChange($event)">
             <label class="form-check-label">
               Inactive
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="DELETE" (change)="onChange($event)">
+            <label class="form-check-label">
+              Delete
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-10" *ngIf="currentRule.status==='INACTIVE'">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="ACTIVE" (change)="onChange($event)">
+            <label class="form-check-label">
+              Active
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="INACTIVE" (change)="onChange($event)"
+              checked>
+            <label class="form-check-label">
+              Inactive
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="DELETE" (change)="onChange($event)">
+            <label class="form-check-label">
+              Delete
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-10" *ngIf="currentRule.status==='DELETE'">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="ACTIVE" (change)="onChange($event)">
+            <label class="form-check-label">
+              Active
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="INACTIVE" (change)="onChange($event)">
+            <label class="form-check-label">
+              Inactive
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="status" value="DELETE" (change)="onChange($event)"
+              checked>
+            <label class="form-check-label">
+              Delete
             </label>
           </div>
         </div>
@@ -36,15 +90,20 @@
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">From</label>
       <div class="col-sm-4">
-        <input type="datetime-local" name="from" class="form-control" (change)="onChange($event)" value="{{currentRule.from}}">
+        <input type="datetime-local" name="from" class="form-control" (change)="onChange($event)"
+          value="{{currentRule.from}}">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">To</label>
       <div class="col-sm-4">
-        <input type="datetime-local" name="to" class="form-control" (change)="onChange($event)" value="{{currentRule.to}}">
+        <input type="datetime-local" name="to" class="form-control" (change)="onChange($event)"
+          value="{{currentRule.to}}">
       </div>
     </div>
+    <!-- end rule information  -->
+
+    <!-- begin rule conditions -->
     <h4>Conditions</h4>
     <div class="form-group row">
       <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules" *ngIf="tData">
@@ -57,19 +116,22 @@
           <e-column field="Status" label="Status" type="string"></e-column>
         </e-columns>
       </ejs-querybuilder>
-      
-      
     </div>
+    <!-- end rule conditions -->
+
+    <!-- begin rule actions -->
     <h4>Actions</h4>
-    
-    <div class="form-group row"  >
+    <div class="form-group row">
       <label class="col-sm-4 col-form-label">Discount Amount</label>
       <div class="col-sm-8">
-        <input name="discount_amout" type="text" value="{{discount}}" (change)="onChangeEvent($event)" class="form-control">
+        <input name="discount_amout" type="text" value="{{discount}}" (change)="onChangeEvent($event)"
+          class="form-control">
       </div>
     </div>
-    
-    <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
+    <div *ngIf="level===1">
+      <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
+    </div>
+    <!-- end rule actions -->
+
   </div>
-  </div>
-  
+</div>

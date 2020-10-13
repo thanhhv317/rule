@@ -1,5 +1,5 @@
-<!-- To render Query Builder. -->
 <div class="container">
+  <!-- Begin rule information -->
   <h4>Rule information</h4>
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">Rule Name</label>
@@ -10,7 +10,8 @@
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">Description</label>
     <div class="col-sm-10">
-      <textarea class="form-control" value="{{info.description}}" name="description" (change)="onChange($event)"></textarea>
+      <textarea class="form-control" value="{{info.description}}" name="description"
+        (change)="onChange($event)"></textarea>
     </div>
   </div>
   <fieldset class="form-group">
@@ -44,6 +45,9 @@
       <input type="datetime-local" name="to" class="form-control" (change)="onChange($event)" value="{{info.to}}">
     </div>
   </div>
+  <!-- end rule information -->
+
+  <!-- begin rule conditions -->
   <h4>Conditions</h4>
   <div class="form-group row">
     <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules">
@@ -56,18 +60,17 @@
         <e-column field="Status" label="Status" type="string"></e-column>
       </e-columns>
     </ejs-querybuilder>
-    
-    
   </div>
+  <!-- end rule conditions -->
+
+  <!-- begin rule actions -->
   <h4>Actions</h4>
-  
   <div class="form-group row">
     <label class="col-sm-4 col-form-label">Discount Amount</label>
     <div class="col-sm-8">
-      <input name="discount_amout" type="text" (change)="onChangeEvent($event)" class="form-control">
+      <input name="discount_amout" type="text" value="{{action.discount_amout}}" (change)="onChangeEvent($event)" class="form-control">
     </div>
   </div>
-  
   <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
-  <div class="footer" style=" height: 30px !important "></div>
+  <!-- end rule actions -->
 </div>

@@ -3,12 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { RuleComponent } from './rule/rule.component';
 import { ListComponent } from './list/list.component';
 import { UpdateRuleComponent } from './update-rule/update-rule.component'
+import { ViewRuleComponent } from './view-rule/view-rule.component';
 
 const routes: Routes = [
   { path: 'create', component: RuleComponent },
   { path: 'list', component: ListComponent },
   { path: '', redirectTo: '/list', pathMatch: 'full' },
-  { path: 'detail/:id', component: UpdateRuleComponent },
+  { path: 'update/:id', component: UpdateRuleComponent },
+  { path: 'detail/:id', component: ViewRuleComponent }
 ];
 
 @NgModule({

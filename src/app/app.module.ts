@@ -14,6 +14,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ListComponent } from './list/list.component';
 import { UpdateRuleComponent } from './update-rule/update-rule.component';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
+import { ViewRuleComponent } from './view-rule/view-rule.component';
 
 
 /**
@@ -65,7 +66,7 @@ const customNotifierOptions: NotifierOptions = {
     AppRoutingModule, HttpClientModule, DataTablesModule,
     NotifierModule.withConfig(customNotifierOptions)
     ], // Declaration of QueryBuilder module into NgModule.
-  declarations: [AppComponent, RuleComponent, ListComponent, UpdateRuleComponent],
+  declarations: [AppComponent, RuleComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
