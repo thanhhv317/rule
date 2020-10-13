@@ -1,0 +1,63 @@
+<div class="container">
+    <div class="d-flex flex-row-reverse">
+        <button class="btn btn-success mb-4" (click)="goBack()">BACK</button>
+    </div>
+    <div *ngIf="currentRule !== undefined">
+
+        <!-- Begin rule information -->
+        <h4>Rule information</h4>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rule Name:</label>
+            <label class="col-sm-10 col-form-label"> {{currentRule.name}}</label>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Description:</label>
+            <label class="col-sm-10 col-form-label"> {{currentRule.description}}</label>
+        </div>
+        <fieldset class="form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">Status:</legend>
+                <label class="col-sm-10 col-form-label rule-status"> {{currentRule.status}}</label>
+            </div>
+        </fieldset>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">From</label>
+            <div class="col-sm-4">
+                <input type="datetime-local" name="from" disabled class="form-control" value="{{currentRule.from}}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">To</label>
+            <div class="col-sm-4">
+                <input type="datetime-local" name="to" disabled class="form-control" value="{{currentRule.to}}">
+            </div>
+        </div>
+        <!-- end rule information  -->
+
+        <!-- begin rule conditions -->
+        <h4>Conditions</h4>
+        <div class="form-group row">
+            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules"
+                *ngIf="tData">
+                <e-columns>
+                    <e-column field="TaskID" label="Task ID" type="number"></e-column>
+                    <e-column field="Name" label="Name" type="string"></e-column>
+                    <e-column field="Category" label="Category" type="string"></e-column>
+                    <e-column field="SerialNo" label="SerialNo" type="string"></e-column>
+                    <e-column field="InvoiceNo" label="InvoiceNo" type="string"></e-column>
+                    <e-column field="Status" label="Status" type="string"></e-column>
+                </e-columns>
+            </ejs-querybuilder>
+        </div>
+        <!-- end rule conditions -->
+
+        <!-- begin rule actions -->
+        <h4>Actions</h4>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Discount Amount:</label>
+            <label class="col-sm-10 col-form-label">{{discount}}%</label>
+        </div>
+        <!-- end rule actions -->
+
+    </div>
+</div>
