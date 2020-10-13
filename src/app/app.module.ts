@@ -5,9 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { QueryBuilderModule } from '@syncfusion/ej2-angular-querybuilder';
 import { DialogModule } from '@syncfusion/ej2-angular-popups';
 import { HttpClientModule } from '@angular/common/http';
-
 import { DataTablesModule } from 'angular-datatables';
-
 import { AppComponent } from './app.component';
 import { RuleComponent } from './rule/rule.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,16 +20,16 @@ import { ViewRuleComponent } from './view-rule/view-rule.component';
  */
 const customNotifierOptions: NotifierOptions = {
   position: {
-		horizontal: {
-			position: 'left',
-			distance: 12
-		},
-		vertical: {
-			position: 'bottom',
-			distance: 12,
-			gap: 10
-		}
-	},
+    horizontal: {
+      position: 'left',
+      distance: 12
+    },
+    vertical: {
+      position: 'bottom',
+      distance: 12,
+      gap: 10
+    }
+  },
   theme: 'material',
   behaviour: {
     autoHide: 5000,
@@ -65,7 +63,7 @@ const customNotifierOptions: NotifierOptions = {
   imports: [BrowserModule, QueryBuilderModule, DialogModule,
     AppRoutingModule, HttpClientModule, DataTablesModule,
     NotifierModule.withConfig(customNotifierOptions)
-    ], // Declaration of QueryBuilder module into NgModule.
+  ], // Declaration of QueryBuilder module into NgModule.
   declarations: [AppComponent, RuleComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent],
   bootstrap: [AppComponent]
 })

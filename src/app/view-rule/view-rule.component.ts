@@ -16,7 +16,6 @@ export class ViewRuleComponent implements OnInit {
   public data: Object[];
   public importRules: RuleModel;
   protected id: string;
-
   public currentRule: Rule;
   tData: boolean = false;
   public discount = 0;
@@ -24,9 +23,8 @@ export class ViewRuleComponent implements OnInit {
   constructor(
     private ruleService: RuleService,
     private route: ActivatedRoute,
-    private location: Location
-  ) {
-  }
+    private location: Location 
+  ) {}
 
   @ViewChild('querybuilder')
   public qryBldrObj: QueryBuilderComponent;
@@ -54,6 +52,4 @@ export class ViewRuleComponent implements OnInit {
   goBack() {
     this.location.back();
   }
-
-
 }

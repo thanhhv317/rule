@@ -1,4 +1,3 @@
-
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { RuleModel, QueryBuilderComponent } from '@syncfusion/ej2-angular-querybuilder';
 import { hardwareData } from './datasource';
@@ -155,5 +154,4 @@ export class UpdateRuleComponent implements OnInit {
       this.updateRule(this.currentRule)
     }
   }
-
 }

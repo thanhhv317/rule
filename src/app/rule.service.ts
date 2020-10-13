@@ -25,17 +25,16 @@ export class RuleService {
   }
 
   public getRule(ruleId: string): Observable<Rule> {
-    return this.httpClient.get<Rule>(this.REST_API_SERVER+'/rule/' + ruleId, this.httpOptions).pipe();
+    return this.httpClient.get<Rule>(this.REST_API_SERVER + '/rule/' + ruleId, this.httpOptions).pipe();
   }
 
   public deleteRule(ruleID: string): Observable<any> {
     return this.httpClient.delete<Rule>(this.REST_API_SERVER + '/rule?ruleID=' + ruleID, this.httpOptions);
   }
 
-  public filterData(data: any) : Observable<any> {
-    return this.httpClient.post(this.REST_API_SERVER+'/rule/filter', data, this.httpOptions).pipe(catchError(this.handleError));
+  public filterData(data: any): Observable<any> {
+    return this.httpClient.post(this.REST_API_SERVER + '/rule/filter', data, this.httpOptions).pipe(catchError(this.handleError));
   }
-
 
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'Unknown error!';
