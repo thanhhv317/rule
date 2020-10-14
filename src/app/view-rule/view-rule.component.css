@@ -1,3 +1,17 @@
 .rule-status {
     color: #64dd17;
 }
+
+button.e-removerule.e-rule-delete.e-css.e-btn.e-small.e-round.e-icon-btn.e-control.e-tooltip.e-lib {
+    display: none !important;
+}
+
+button#e-dropdown-btn_1 {
+    display: none !important;
+}
+
+.rule-date {
+    background-color: #b2dfdb;
+    padding: 4px 10px;
+    border-radius: 5px;
+}

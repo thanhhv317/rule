@@ -14,6 +14,9 @@ import { UpdateRuleComponent } from './update-rule/update-rule.component';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { ViewRuleComponent } from './view-rule/view-rule.component';
 
+// ng bootstrap
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 /**
  * Custom angular notifier options
@@ -62,7 +65,8 @@ const customNotifierOptions: NotifierOptions = {
 @NgModule({
   imports: [BrowserModule, QueryBuilderModule, DialogModule,
     AppRoutingModule, HttpClientModule, DataTablesModule,
-    NotifierModule.withConfig(customNotifierOptions)
+    NotifierModule.withConfig(customNotifierOptions),
+    NgbModule, 
   ], // Declaration of QueryBuilder module into NgModule.
   declarations: [AppComponent, RuleComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent],
   bootstrap: [AppComponent]

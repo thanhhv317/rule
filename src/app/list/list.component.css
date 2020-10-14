@@ -24,8 +24,9 @@ table#DataTables_Table_0 {
     transition: opacity 0.3s ease-in-out;
 }
 
-.btn-delete:hover, .btn-update:hover {
-    opacity:0.6;
+.btn-delete:hover,
+.btn-update:hover {
+    opacity: 0.6;
 }
 
 .status-active {
@@ -51,9 +52,50 @@ table#DataTables_Table_0 {
 }
 
 .rule-name:hover {
-    opacity:0.6;
+    opacity: 0.6;
 }
 
 .filter-group {
     background-color: #e0f2f1;
 }
+
+::ng-deep div#DataTables_Table_0_length>label {
+    margin-top: 0.25rem !important;
+}
+
+
+/* datepicker popup */
+
+::ng-deep .form-group.hidden {
+    width: 0;
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+ ::ng-deep .custom-day {
+    text-align: center;
+    padding: 0.185rem 0.25rem;
+    display: inline-block;
+    height: 2rem;
+    width: 2rem;
+}
+
+ ::ng-deep .custom-day.focused {
+    background-color: #e6e6e6;
+}
+
+ ::ng-deep .custom-day.range,
+.custom-day:hover {
+    background-color: rgb(2, 117, 216);
+    color: white;
+}
+
+ ::ng-deep .custom-day.faded {
+    background-color: rgba(2, 117, 216, 0.5);
+}
+
+
+/* .form-group.hidden>* {
+    display: none !important;
+} */

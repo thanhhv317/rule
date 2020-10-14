@@ -23,13 +23,13 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">From</label>
             <div class="col-sm-4">
-                <input type="datetime-local" name="from" disabled class="form-control" value="{{currentRule.from}}">
+                <span class="rule-date">{{currentRule.from}}</span>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">To</label>
             <div class="col-sm-4">
-                <input type="datetime-local" name="to" disabled class="form-control" value="{{currentRule.to}}">
+                <span class="rule-date">{{currentRule.to}}</span>
             </div>
         </div>
         <!-- end rule information  -->
@@ -37,8 +37,7 @@
         <!-- begin rule conditions -->
         <h4>Conditions</h4>
         <div class="form-group row">
-            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules"
-                *ngIf="tData">
+            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules" *ngIf="tData">
                 <e-columns>
                     <e-column field="TaskID" label="Task ID" type="number"></e-column>
                     <e-column field="Name" label="Name" type="string"></e-column>

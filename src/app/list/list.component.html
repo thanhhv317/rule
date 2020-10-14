@@ -1,87 +1,97 @@
 <div class="container">
-  <!-- Begin filter component -->
-  <div class="filter-group pt-3">
-    <div class="col-lg-12 col-md-12 col-12">
-      <div class="row">
-        <div class="col-lg-6 col-md-6 col-12">
-          <div class="row">
-            <div class="col-lg-6 col-md-6 col-12">
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">FROM:</label>
-                <div class="col-sm-10">
-                  <input type="datetime-local" name="from" class="form-control" (change)="onChange($event)">
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-12">
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">TO:</label>
-                <div class="col-sm-10">
-                  <input type="datetime-local" name="to" class="form-control" (change)="onChange($event)">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-3 col-12">
-          <div class="form-group row">
-            <label class="col-sm-4 col-form-label">STATUS:</label>
-            <div class="col-sm-8">
-              <select class="form-control" name="status" (change)="selectChangeHandler($event)">
-                <option *ngFor="let stt of status" [ngValue]="stt.value">
-                  {{ stt.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-12 col-12">
-          <button type="button" class="btn btn-success btn-block" (click)="onSearch()">Search</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <hr>
-  <!-- end filter component -->
+    <!-- Begin filter component -->
 
-  <div class="table-responsive">
-    <table datatable [dtOptions]="dtOptions" *ngIf="tData" class="row-border hover" style="width: 100%;">
-      <thead>
-        <tr>
-          <th>Rule name</th>
-          <th>Description</th>
-          <th>Start</th>
-          <th>End</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody *ngIf="rules?.length != 0">
-        <tr *ngFor="let rule of rules" id="{{rule._id}}">
-          <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.name }}</a></td>
-          <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.description }}</a></td>
-          <td>{{ rule.from }}</td>
-          <td>{{ rule.to }}</td>
-          <td *ngIf="rule.status==='ACTIVE'">
-            <span class="status-active">{{ rule.status }}</span>
-          </td>
-          <td *ngIf="rule.status==='INACTIVE'">
-            <span class="status-inactive">{{ rule.status }}</span>
-          </td>
-          <td *ngIf="rule.status==='DELETE'">
-            <span class="status-delete">{{ rule.status }}</span>
-          </td>
-          <td>
-            <a routerLink="/update/{{rule._id}}" class="btn btn-update mr-1">Update</a>
-            <button type="button" class="btn btn-delete" (click)="onDelete(rule._id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-      <tbody *ngIf="rules?.length == 0">
-        <tr>
-          <td colspan="3" class="no-data-available">No data!</td>
-        </tr>
-      <tbody>
-    </table>
-  </div>
+    <div class="table table-responsive">
+        <table datatable [dtOptions]="dtOptions" *ngIf="tData" class="row-border hover" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Rule name</th>
+                    <th>Description</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <thead>
+                <tr>
+                    <th>
+                        <input value="{{filterData.name}}" name="name" type="text" (change)="onChange($event)" (keyup.enter)="onFilter()" class="form-control form-control-sm">
+                    </th>
+                    <th>
+                        <input value="{{filterData.description}}" name="description" type="text" (change)="onChange($event)" (keyup.enter)="onFilter()" class="form-control form-control-sm">
+                    </th>
+                    <th colspan="2">
+
+                        <form class="form-inline">
+                            <div class="form-group hidden">
+                                <div class="input-group">
+                                    <input name="datepicker" style="display: none;" class="form-control" ngbDatepicker #datepicker="ngbDatepicker" [autoClose]="'outside'" (dateSelect)="onDateSelection($event)" [displayMonths]="1" [dayTemplate]="t" outsideDays="hidden" [startDate]="fromDate!">
+                                    <ng-template #t let-date let-focused="focused">
+                                        <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                      {{ date.day }}
+                    </span>
+                                    </ng-template>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input #dpFromDate class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="dpFromDate" [value]="formatter.format(fromDate)" (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()" type="button">📅</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input #dpToDate class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="dpToDate" [value]="formatter.format(toDate)" (input)="toDate = validateInput(toDate, dpToDate.value)">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()" type="button">📅</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </th>
+                    <th>
+                        <select class="form-control form-control-sm" name="status" [(ngModel)]="filterData.status" (change)="selectChangeHandler($event)">
+              <option *ngFor="let stt of status" [ngValue]="stt.value">
+                {{ stt.name }}
+              </option>
+            </select>
+                    </th>
+                    <th>
+                        <button class="btn btn-sm btn-success btn-block" (click)="onFilter()">Search</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody *ngIf="rules?.length != 0">
+                <tr *ngFor="let rule of rules" id="{{rule._id}}">
+                    <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.name }}</a></td>
+                    <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.description }}</a></td>
+                    <td>{{ rule.from }}</td>
+                    <td>{{ rule.to }}</td>
+                    <td *ngIf="rule.status==='ACTIVE'">
+                        <span class="status-active">{{ rule.status }}</span>
+                    </td>
+                    <td *ngIf="rule.status==='INACTIVE'">
+                        <span class="status-inactive">{{ rule.status }}</span>
+                    </td>
+                    <td *ngIf="rule.status==='DELETE'">
+                        <span class="status-delete">{{ rule.status }}</span>
+                    </td>
+                    <td>
+                        <div class="">
+                            <a routerLink="/update/{{rule._id}}" class="btn btn-update btn-sm ml-2 mr-1">Update</a>
+                            <button type="button" class="btn btn-delete btn-sm" (click)="onDelete(rule._id)">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="rules?.length == 0">
+                <tr>
+                    <td colspan="3" class="no-data-available">No data!</td>
+                </tr>
+                <tbody>
+        </table>
+    </div>
 </div>

@@ -4,14 +4,13 @@ import { Rule } from '../interfaces/rule';
 import * as moment from 'moment';
 import { RuleService } from '../rule.service';
 import { NotifierService } from "angular-notifier";
+import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 class DataTablesResponse {
   data: any[];
   draw: number;
   recordsFiltered: number;
   recordsTotal: number;
-  start: number;
-  length: number;
 }
 
 @Component({
@@ -21,15 +20,14 @@ class DataTablesResponse {
 })
 export class ListComponent implements OnInit {
 
+  hoveredDate: NgbDate | null = null;
+  fromDate: NgbDate | null;
+  toDate: NgbDate | null;
+
   dtOptions: DataTables.Settings = {};
   rules: Rule[];
   tData: boolean = false;
   private readonly notifier: NotifierService;
-
-  public recordsTotal = 0;
-  public recordsFiltered = 0;
-  public start = 0;
-  public length = 10;
 
   public status = [
     { name: "All", value: "ALL" },
@@ -39,19 +37,23 @@ export class ListComponent implements OnInit {
   ]
 
   public filterData = {
-    start: this.start,
-    length: this.length,
+    name: '',
+    description: '',
     from: '',
     to: '',
     status: 'ALL'
   }
 
-  constructor( 
-    private http: HttpClient, 
-    private ruleService: RuleService, 
-    notifierService: NotifierService
+  constructor(
+    private http: HttpClient,
+    private ruleService: RuleService,
+    notifierService: NotifierService,
+    private calendar: NgbCalendar,
+    public formatter: NgbDateParserFormatter
   ) {
-     this.notifier = notifierService;
+    this.notifier = notifierService;
+    // this.fromDate = calendar.getToday();
+    // this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
   }
 
   ngOnInit(): void {
@@ -63,29 +65,27 @@ export class ListComponent implements OnInit {
     const that = this;
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 20,
+      pageLength: 10,
       serverSide: true,
-      dom: '<"top"f>rt<"bottom"lp><"clear">',
+      dom: '<"top"i>rt<"bottom"lp><"clear">',
       processing: true,
-      lengthMenu: [[20, 30, 50, 100], [20, 30, 50, 100]],
+      lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
       ajax: (dataTablesParameters: any, callback) => {
+        let tmp = { ...dataTablesParameters };
+        tmp.filter = this.filterData;
         that.http
           .post<DataTablesResponse>(
             'http://localhost:3000/rule/list',
-            dataTablesParameters, {}
+            tmp, {}
           ).subscribe(resp => {
             that.rules = [...resp.data];
-            that.recordsTotal = resp.recordsTotal;
-            that.recordsFiltered = resp.recordsFiltered;
-            that.start = resp.start;
-            that.length = resp.length;
             for (let i = 0; i < that.rules.length; ++i) {
-              that.rules[i].from = moment(that.rules[i].from).format('hh:mm DD/MM/YYYY')
-              that.rules[i].to = moment(that.rules[i].to).format('hh:mm DD/MM/YYYY')
+              that.rules[i].from = moment(that.rules[i].from).format('DD/MM/YYYY hh:mm:ss')
+              that.rules[i].to = moment(that.rules[i].to).format('DD/MM/YYYY hh:mm:ss')
             }
             callback({
-              recordsTotal: that.recordsTotal,
-              recordsFiltered: that.recordsFiltered,
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
               data: []
             });
           });
@@ -95,7 +95,8 @@ export class ListComponent implements OnInit {
         { data: 'description' },
         { data: 'from' },
         { data: 'to' },
-        { data: 'status' }
+        { data: 'status' },
+        { data: 'actions' , searchable: false, orderable: false }
       ]
     };
   }
@@ -123,14 +124,55 @@ export class ListComponent implements OnInit {
     this.filterData.status = event.target.value.toUpperCase();
   }
 
-  onSearch(): void {
-    this.ruleService.filterData(this.filterData).subscribe((data: any) => {
-      this.rules = [...data.data];
-      this.rules.map((rule) => {
-        rule.from = moment(rule.from).format('hh:mm DD/MM/YYYY')
-        rule.to = moment(rule.to).format('hh:mm DD/MM/YYYY')
-      })
-    });
+  onFilter() {
+    this.tData = false;
+
+    this.filterData.from = this.convertNgbDate2String(this.fromDate, true);
+    this.filterData.to = this.convertNgbDate2String(this.toDate, false);
+    setTimeout(() => {
+      this.getData();
+    }, 100)
+  }
+
+  convertNgbDate2String(date: NgbDate | null, from: boolean): string {
+    // 2020-10-17T15:49
+    if (date === null || date === undefined) return '';
+    let end: string = from ? 'T00:01' : 'T23:59';
+    return date.year.toString() + '-' + this.addZero2Number(date.month) + '-' + this.addZero2Number(date.day) + end;
+  }
+
+  addZero2Number(num: Number): string {
+    return num < 10 ? `0${num}` : num.toString();
+  }
+
+  // datepicker
+
+  onDateSelection(date: NgbDate) {
+    if (!this.fromDate && !this.toDate) {
+      this.fromDate = date;
+    } else if (this.fromDate && !this.toDate && date && date.after(this.fromDate)) {
+      this.toDate = date;
+    } else {
+      this.toDate = null;
+      this.fromDate = date;
+    }
+  }
+
+  isHovered(date: NgbDate) {
+    return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+  }
+
+  isInside(date: NgbDate) {
+    return this.toDate && date.after(this.fromDate) && date.before(this.toDate);
+  }
+
+  isRange(date: NgbDate) {
+    return date.equals(this.fromDate) || (this.toDate && date.equals(this.toDate)) || this.isInside(date) || this.isHovered(date);
+  }
+
+  validateInput(currentValue: NgbDate | null, input: string): NgbDate | null {
+    const parsed = this.formatter.parse(input);
+    return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
   }
 
 }
