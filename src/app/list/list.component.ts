@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { RuleService } from '../rule.service';
 import { NotifierService } from "angular-notifier";
 import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { Status } from '../interfaces/status';
 
 class DataTablesResponse {
   data: any[];
@@ -29,12 +30,8 @@ export class ListComponent implements OnInit {
   tData: boolean = false;
   private readonly notifier: NotifierService;
 
-  public status = [
-    { name: "All", value: "ALL" },
-    { name: "Active", value: "ACTIVE" },
-    { name: "Inactive", value: "INACTIVE" },
-    { name: "Delete", value: "DELETE" },
-  ]
+  status : Status[];
+  statusSeleted: string;
 
   public filterData = {
     name: '',
@@ -57,8 +54,18 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.status = [
+      { name: "All", value: "ALL" },
+      { name: "Active", value: "ACTIVE" },
+      { name: "Inactive", value: "INACTIVE" },
+      { name: "Delete", value: "DELETE" },
+    ];
     this.getData();
+
+    this.statusSeleted = "ALL";
   }
+
+
 
   getData(): void {
     this.tData = true;
@@ -121,11 +128,12 @@ export class ListComponent implements OnInit {
   }
 
   selectChangeHandler(event: any) {
-    this.filterData.status = event.target.value.toUpperCase();
+    this.filterData.status = event.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
   }
 
   onFilter() {
     this.tData = false;
+
 
     this.filterData.from = this.convertNgbDate2String(this.fromDate, true);
     this.filterData.to = this.convertNgbDate2String(this.toDate, false);

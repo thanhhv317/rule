@@ -53,7 +53,7 @@
                         </form>
                     </th>
                     <th>
-                        <select class="form-control form-control-sm" name="status" [(ngModel)]="filterData.status" (change)="selectChangeHandler($event)">
+                        <select class="form-control form-control-sm" name="status" [(ngModel)]="statusSeleted" (change)="selectChangeHandler($event)">
               <option *ngFor="let stt of status" [ngValue]="stt.value">
                 {{ stt.name }}
               </option>
