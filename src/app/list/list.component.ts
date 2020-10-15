@@ -37,9 +37,10 @@ export class ListComponent implements OnInit {
   public filterData = {
     name: '',
     description: '',
-    from_date: '',
-    to_date: '',
-    status: 'ALL'
+    from_date: null,
+    to_date: null,
+    status: 'ALL',
+    priority: '',
   }
 
   constructor(
@@ -57,9 +58,8 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     this.status = [
       { name: "All", value: "ALL" },
-      { name: "Active", value: "ACTIVE" },
-      { name: "Inactive", value: "INACTIVE" },
-      { name: "Delete", value: "DELETE" },
+      { name: "Active", value: "true" },
+      { name: "Inactive", value: "false" },
     ];
     this.getData();
 
@@ -130,7 +130,7 @@ export class ListComponent implements OnInit {
   }
 
   selectChangeHandler(event: any) {
-    this.filterData.status = event.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    this.filterData.status = event.target.value.replace(/[^a-zA-Z]/g, '');
   }
 
   formatDateTime(timestemp: number) {
@@ -141,18 +141,16 @@ export class ListComponent implements OnInit {
     this.tData = false;
 
 
-    this.filterData.from_date = this.convertNgbDate2String(this.fromDate, true);
-    this.filterData.to_date = this.convertNgbDate2String(this.toDate, false);
+    this.filterData.from_date = this.convertNgbDate2String(this.fromDate);
+    this.filterData.to_date = this.convertNgbDate2String(this.toDate);
     setTimeout(() => {
       this.getData();
     }, 100)
   }
 
-  convertNgbDate2String(date: NgbDate | null, from: boolean): string {
-    // 2020-10-17T15:49
-    if (date === null || date === undefined) return '';
-    let end: string = from ? 'T00:01' : 'T23:59';
-    return date.year.toString() + '-' + this.addZero2Number(date.month) + '-' + this.addZero2Number(date.day) + end;
+  convertNgbDate2String(date: NgbDate | null): number {
+    if(!date) return null;
+    return moment(date).valueOf();
   }
 
   addZero2Number(num: Number): string {
