@@ -9,6 +9,7 @@
                     <th>Description</th>
                     <th>Start</th>
                     <th>End</th>
+                    <th>Priority</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -52,6 +53,7 @@
                             </div>
                         </form>
                     </th>
+                    <th></th>
                     <th>
                         <select class="form-control form-control-sm" name="status" [(ngModel)]="statusSeleted" (change)="selectChangeHandler($event)">
               <option *ngFor="let stt of status" [ngValue]="stt.value">
@@ -68,17 +70,16 @@
                 <tr *ngFor="let rule of rules" id="{{rule._id}}">
                     <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.name }}</a></td>
                     <td><a class="rule-name" routerLink="/detail/{{rule._id}}">{{ rule.description }}</a></td>
-                    <td>{{ rule.from }}</td>
-                    <td>{{ rule.to }}</td>
-                    <td *ngIf="rule.status==='ACTIVE'">
-                        <span class="status-active">{{ rule.status }}</span>
+                    <td>{{ formatDateTime(rule.from_date) }}</td>
+                    <td>{{ formatDateTime(rule.to_date) }}</td>
+                    <td>{{ rule.priority }}</td>
+                    <td *ngIf="rule.active===true">
+                        <span class="status-active">Active</span>
                     </td>
-                    <td *ngIf="rule.status==='INACTIVE'">
-                        <span class="status-inactive">{{ rule.status }}</span>
+                    <td *ngIf="rule.active===false">
+                        <span class="status-inactive">Inactive</span>
                     </td>
-                    <td *ngIf="rule.status==='DELETE'">
-                        <span class="status-delete">{{ rule.status }}</span>
-                    </td>
+
                     <td>
                         <div class="">
                             <a routerLink="/update/{{rule._id}}" class="btn btn-update btn-sm ml-2 mr-1">Update</a>

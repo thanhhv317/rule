@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "~10.1.5",
     "@angular/router": "~10.1.5",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
+    "@syncfusion/ej2-angular-calendars": "^18.3.40",
     "@syncfusion/ej2-angular-popups": "^18.3.35",
     "@syncfusion/ej2-angular-querybuilder": "^18.3.35",
     "angular-datatables": "^9.0.2",

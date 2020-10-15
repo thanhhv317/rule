@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Rule } from '../interfaces/rule';
+import { BackendRule } from '../interfaces/backendRule';
 import * as moment from 'moment';
 import { RuleService } from '../rule.service';
 import { NotifierService } from "angular-notifier";
@@ -26,18 +27,18 @@ export class ListComponent implements OnInit {
   toDate: NgbDate | null;
 
   dtOptions: DataTables.Settings = {};
-  rules: Rule[];
+  rules: BackendRule[];
   tData: boolean = false;
   private readonly notifier: NotifierService;
 
-  status : Status[];
+  status: Status[];
   statusSeleted: string;
 
   public filterData = {
     name: '',
     description: '',
-    from: '',
-    to: '',
+    from_date: '',
+    to_date: '',
     status: 'ALL'
   }
 
@@ -87,8 +88,8 @@ export class ListComponent implements OnInit {
           ).subscribe(resp => {
             that.rules = [...resp.data];
             for (let i = 0; i < that.rules.length; ++i) {
-              that.rules[i].from = moment(that.rules[i].from).format('DD/MM/YYYY hh:mm:ss')
-              that.rules[i].to = moment(that.rules[i].to).format('DD/MM/YYYY hh:mm:ss')
+              that.rules[i].from_date = Number(moment(that.rules[i].from_date))
+              that.rules[i].to_date = Number(moment(that.rules[i].to_date))
             }
             callback({
               recordsTotal: resp.recordsTotal,
@@ -103,7 +104,8 @@ export class ListComponent implements OnInit {
         { data: 'from' },
         { data: 'to' },
         { data: 'status' },
-        { data: 'actions' , searchable: false, orderable: false }
+        { data: 'priority' },
+        { data: 'actions', searchable: false, orderable: false }
       ]
     };
   }
@@ -111,7 +113,7 @@ export class ListComponent implements OnInit {
   onDelete(id: string): void {
     if (confirm("DO YOU WANT DELETE IT?")) {
       this.rules.map((rule) => {
-        rule._id === id ? rule.status = "DELETE" : ''
+        // rule._id === id ? rule.active = "DELETE" : ''
       })
       this.ruleService.deleteRule(id).subscribe((data: any) => {
         this.notifier.notify("success", "Successfully deleted!");
@@ -131,12 +133,16 @@ export class ListComponent implements OnInit {
     this.filterData.status = event.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
   }
 
+  formatDateTime(timestemp: number) {
+    return moment(timestemp).format("MM/DD/YYYY -- hh:mm:ss");
+  }
+
   onFilter() {
     this.tData = false;
 
 
-    this.filterData.from = this.convertNgbDate2String(this.fromDate, true);
-    this.filterData.to = this.convertNgbDate2String(this.toDate, false);
+    this.filterData.from_date = this.convertNgbDate2String(this.fromDate, true);
+    this.filterData.to_date = this.convertNgbDate2String(this.toDate, false);
     setTimeout(() => {
       this.getData();
     }, 100)

@@ -20,6 +20,8 @@ export class ViewRuleComponent implements OnInit {
   tData: boolean = false;
   public discount = 0;
 
+  public showButtons: Object = { groupInsert: false, groupDelete: false, ruleDelete: false} 
+
   constructor(
     private ruleService: RuleService,
     private route: ActivatedRoute,

@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rule } from './interfaces/rule';
+import { BackendRule } from './interfaces/backendRule';
 import { Observable, of, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 
@@ -16,8 +17,8 @@ export class RuleService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public addData(rule: Rule): Observable<Rule> {
-    return this.httpClient.post<Rule>(this.REST_API_SERVER + '/rule/create', rule, this.httpOptions).pipe(catchError(this.handleError));
+  public addData(bacnkedRule: BackendRule): Observable<BackendRule> {
+    return this.httpClient.post<BackendRule>(this.REST_API_SERVER + '/rule/create', bacnkedRule, this.httpOptions).pipe(catchError(this.handleError));
   }
 
   public updateData(ruleId: string, rule: any): Observable<any> {

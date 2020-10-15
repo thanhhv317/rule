@@ -18,6 +18,10 @@ import { FormsModule } from '@angular/forms';
 
 // ng bootstrap
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CreateComponent } from './create/create.component';
+
+// import the DateTimePickerModule for the DateTimePicker component
+import { DateTimePickerModule } from "@syncfusion/ej2-angular-calendars";
 
 
 /**
@@ -68,9 +72,9 @@ const customNotifierOptions: NotifierOptions = {
   imports: [BrowserModule, QueryBuilderModule, DialogModule,
     AppRoutingModule, HttpClientModule, DataTablesModule,
     NotifierModule.withConfig(customNotifierOptions),
-    NgbModule, FormsModule
+    NgbModule, FormsModule, DateTimePickerModule
   ], // Declaration of QueryBuilder module into NgModule.
-  declarations: [AppComponent, RuleComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent],
+  declarations: [AppComponent, RuleComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent, CreateComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
