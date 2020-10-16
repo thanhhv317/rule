@@ -36,7 +36,7 @@ export class ListComponent implements OnInit {
 
   public filterData = {
     name: '',
-    description: '',
+    type: '',
     from_date: null,
     to_date: null,
     status: 'ALL',
@@ -100,7 +100,7 @@ export class ListComponent implements OnInit {
       },
       columns: [
         { data: 'name' },
-        { data: 'description' },
+        { data: 'type' },
         { data: 'from' },
         { data: 'to' },
         { data: 'status' },
@@ -113,7 +113,7 @@ export class ListComponent implements OnInit {
   onDelete(id: string): void {
     if (confirm("DO YOU WANT DELETE IT?")) {
       this.rules.map((rule) => {
-        // rule._id === id ? rule.active = "DELETE" : ''
+        rule._id === id ? rule.active = false : ''
       })
       this.ruleService.deleteRule(id).subscribe((data: any) => {
         this.notifier.notify("success", "Successfully deleted!");
@@ -134,13 +134,11 @@ export class ListComponent implements OnInit {
   }
 
   formatDateTime(timestemp: number) {
-    return moment(timestemp).format("MM/DD/YYYY -- hh:mm:ss");
+    return moment(timestemp).format("DD/MM/YYYY -- hh:mm:ss");
   }
 
   onFilter() {
     this.tData = false;
-
-
     this.filterData.from_date = this.convertNgbDate2String(this.fromDate);
     this.filterData.to_date = this.convertNgbDate2String(this.toDate);
     setTimeout(() => {
@@ -150,7 +148,8 @@ export class ListComponent implements OnInit {
 
   convertNgbDate2String(date: NgbDate | null): number {
     if(!date) return null;
-    return moment(date).valueOf();
+    const jsDate = new Date(date.year, date.month - 1, date.day);
+    return moment(jsDate).valueOf();
   }
 
   addZero2Number(num: Number): string {

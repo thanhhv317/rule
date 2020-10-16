@@ -22,26 +22,26 @@ export class CreateComponent implements OnInit {
   public actionType: ActionType[];
   public listAction = [
     [
-      { field: 'Event name', name: 'type' },
-      { field: 'Path', name: 'path' },
-      { field: 'Phí cố định', name: 'e_value_base' },
-      { field: 'Phí %', name: 'e_value_rate' },
-      { field: 'Giá trị lớn nhất', name: 'max_value' },
-      { field: 'Giá trị nhỏ nhất', name: 'min_value' }
+      { field: 'Event name', name: 'type', type: "text" },
+      { field: 'Path', name: 'path', type: "text" },
+      { field: 'Phí cố định', name: 'e_value_base', type: "number" },
+      { field: 'Phí %', name: 'e_value_rate', type: "number" },
+      { field: 'Giá trị lớn nhất', name: 'max_value', type: "number" },
+      { field: 'Giá trị nhỏ nhất', name: 'min_value', type: "number" }
     ],
     [
-      { field: 'Event name', name: 'type' },
-      { field: 'Path', name: 'path' },
-      { field: 'Phí cố định', name: 'e_value_base' }
+      { field: 'Event name', name: 'type', type: "text" },
+      { field: 'Connector name', name: 'connector_name', type: "text" },
+      { field: 'Limit', name: 'limit', type: "number"}
     ],
     [],
     [
-      { field: 'Event name', name: 'type' },
-      { field: 'Path', name: 'path' },
-      { field: 'Phí cố định', name: 'e_value_base' },
-      { field: 'Phí %', name: 'e_value_rate' },
-      { field: 'Giá trị lớn nhất', name: 'max_value' },
-      { field: 'Giá trị nhỏ nhất', name: 'min_value' }
+      { field: 'Event name', name: 'type', type: "text" },
+      { field: 'Path', name: 'path', type: "text" },
+      { field: 'Phí cố định', name: 'e_value_base', type: "number" },
+      { field: 'Phí %', name: 'e_value_rate', type: "number" },
+      { field: 'Giá trị lớn nhất', name: 'max_value', type: "number" },
+      { field: 'Giá trị nhỏ nhất', name: 'min_value', type: "number" }
     ]
   ];
   public isFee: Boolean = false;
@@ -84,9 +84,9 @@ export class CreateComponent implements OnInit {
 
     this.backendRule = {
       fee_type: 1,
-      to_date: 12,
-      from_date: 0,
-      priority: 1,
+      from_date: null,
+      to_date: null,
+      priority: null,
       active: true,
       name: '',
       description: '',
@@ -101,16 +101,16 @@ export class CreateComponent implements OnInit {
     this.event = {
       type: '',
       path: '',
-      e_value_base: 0,
-      e_value_rate: 0,
-      min_value: 0,
-      max_value: 0,
+      e_value_base: null,
+      e_value_rate: null,
+      min_value: null,
+      max_value: null,
     }
   }
 
   onChangeDateEj2(args, field) {
-    console.log(args.value);
-    console.log(moment(args.value).valueOf());
+    // console.log(args.value);
+    // console.log(moment(args.value).valueOf());
     this.backendRule[field] = moment(args.value).valueOf();
   }
 
@@ -137,18 +137,19 @@ export class CreateComponent implements OnInit {
 
   selectFeeType(event: any) {
     this.feeTypeSelected = Number(event.target.value[3]);
+    this.backendRule.fee_type = this.feeTypeSelected;
   }
 
   onChange(event: any) { // without type info
     let nam = event.target.name;
     let val = event.target.value;
     if (nam === 'status') {
-      this.status = val==="ACTIVE" ? true: false;
+      this.status = val === "ACTIVE" ? true : false;
     }
     this.backendRule[nam] = val;
   }
 
-  checkNull(field: any, message: string) {
+  checkNull(field: boolean, message: string) {
     if (field) {
       this.notifier.notify("error", message);
       return true;
@@ -157,6 +158,12 @@ export class CreateComponent implements OnInit {
   }
 
   getValue(): void {
+    if (this.checkNull(this.backendRule.name === '', "The name of rule is require")) {
+      return;
+    };
+    if (this.checkNull(this.backendRule.priority === null || Number(this.backendRule.priority) === 0, "The priority of rule is not correct")) {
+      return;
+    };
     let event = this.convertEvent(this.event);
     this.backendRule.event = event;
     this.backendRule.active = this.status;
@@ -168,17 +175,27 @@ export class CreateComponent implements OnInit {
   }
 
   convertEvent(data: any): any {
-    if (data.type === '') return {};
-    return JSON.stringify({
+    if (data.type === '') return JSON.stringify({
+      type: ""
+    });
+    let result = {
       type: data.type,
       params: {
         path: data.path,
-        e_value_base: data.e_value_base,
-        e_value_rate: data.e_value_rate,
-        min_value: data.min_value,
-        max_value: data.max_value
+        e_value_base: Number(data.e_value_base),
+        e_value_rate: Number(data.e_value_rate),
+        min_value: Number(data.min_value),
+        max_value: Number(data.max_value)
       }
-    })
+    };
+
+    for(let item in result.params) {
+      if (result.params[item] === null || result.params[item] === 0) {
+        delete result.params[item];
+      }
+    }
+
+    return JSON.stringify(result);
   }
 
   parseConditions(data: any) {
@@ -209,32 +226,8 @@ export class CreateComponent implements OnInit {
     return result;
   }
 
-  // param data: this.parseConditions
-  reparseConditions(data: any) {
-    const result = {};
-    const o = Object.keys(data)[0] === 'all' ? "and" : "or";
-    result['condition'] = o;
-    result['rules'] = [];
-    let tmp = (o === 'and') ? data.all : data.or;
-    if (tmp && tmp.length) {
-      // result['rules'] = [];
-      for (let i = 0; i < tmp.length; ++i) {
-        if (["all", "any"].includes(Object.keys(tmp[i])[0].toString())) {
-          result['rules'][i] = this.reparseConditions(tmp[i]);
-        }
-        else {
-          // field want
-          result['rules'][i] = {
-            field: '1',
-            operator: '2'
-          }
-        }
-      }
-    }
-    return result;
-  }
-
   addData() {
+    if (!this.isAdd) return;
     this.ruleService.addData(this.backendRule).subscribe((res) => {
       console.log(res);
     })

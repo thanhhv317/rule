@@ -11,26 +11,32 @@
             <label class="col-sm-10 col-form-label"> {{currentRule.name}}</label>
         </div>
         <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rule Type:</label>
+            <label class="col-sm-10 col-form-label"> {{currentRule.type}}</label>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Fee Type:</label>
+            <label class="col-sm-10 col-form-label"> {{formatFeeType(currentRule.fee_type)}}</label>
+        </div>
+        <div class="form-group row">
             <label class="col-sm-2 col-form-label">Description:</label>
             <label class="col-sm-10 col-form-label"> {{currentRule.description}}</label>
         </div>
         <fieldset class="form-group">
             <div class="row">
                 <legend class="col-form-label col-sm-2 pt-0">Status:</legend>
-                <label class="col-sm-10 col-form-label rule-status"> {{currentRule.status}}</label>
+                <label class="col-sm-10 col-form-label rule-status"> {{getStatusFromActive(currentRule.status)}}</label>
             </div>
         </fieldset>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">From</label>
-            <div class="col-sm-4">
-                <span class="rule-date">{{currentRule.from}}</span>
+            <div class="col-12">
+                From: <span class="rule-date ml-3">{{formatDateTime(currentRule.from_date)}}</span>&nbsp;/&nbsp;To:
+                <span class="rule-date ml-3">{{formatDateTime(currentRule.to_date)}}</span>
             </div>
+
         </div>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">To</label>
-            <div class="col-sm-4">
-                <span class="rule-date">{{currentRule.to}}</span>
-            </div>
+
         </div>
         <!-- end rule information  -->
 
@@ -52,10 +58,23 @@
 
         <!-- begin rule actions -->
         <h4>Actions</h4>
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Discount Amount:</label>
-            <label class="col-sm-10 col-form-label">{{discount}}%</label>
+        <div *ngIf="action.type">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Action name: </label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control" value="{{action.type}}">
+                </div>
+            </div>
+            <div class="form-group row" *ngFor="let i of action.key">
+                <label class="col-sm-2 col-form-label">{{i}}</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control" value="{{action.value[i]}}">
+                </div>
+            </div>
+
         </div>
+
+
         <!-- end rule actions -->
 
     </div>

@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { RuleModel, QueryBuilderComponent } from '@syncfusion/ej2-angular-querybuilder';
 import { RuleService } from '../rule.service';
-import { Rule } from '../interfaces/rule';
+import { BackendRule } from '../interfaces/backendRule';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
@@ -16,11 +16,11 @@ export class ViewRuleComponent implements OnInit {
   public data: Object[];
   public importRules: RuleModel;
   protected id: string;
-  public currentRule: Rule;
+  public currentRule: BackendRule;
   tData: boolean = false;
-  public discount = 0;
+  public action = [];
 
-  public showButtons: Object = { groupInsert: false, groupDelete: false, ruleDelete: false} 
+  public showButtons: Object = { groupInsert: false, groupDelete: false, ruleDelete: false }
 
   constructor(
     private ruleService: RuleService,
@@ -34,19 +34,29 @@ export class ViewRuleComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     this.getRule();
-
   }
 
   getRule(): void {
     this.ruleService.getRule(this.id).subscribe((data: any) => {
       this.currentRule = data;
       this.tData = true;
-      this.currentRule.from = moment(this.currentRule.from).format("DD/MM/YYYY -- hh:mm:ss");
-      this.currentRule.to = moment(this.currentRule.to).format("DD/MM/YYYY -- hh:mm:ss");
-      let tmp = JSON.parse(this.currentRule.actions);
-      this.discount = tmp.params.discount
+      this.action['type'] = JSON.parse(this.currentRule.event).type;
+
+      this.action['key'] = [];
+      this.action['value'] = [];
+      let tmp = JSON.parse(this.currentRule.event).params;
+      this.action['value'] = tmp;
+
+      let i = 0;
+      for (let item in tmp) {
+        this.action['key'][i] = item;
+        i++;
+      }
+
+      let condition = (this.reparseConditions(JSON.parse(this.currentRule.conditions)));
+
       setTimeout(() => {
-        this.importRules = JSON.parse(this.currentRule.data);
+        this.importRules = (condition);
         this.qryBldrObj.setRules(this.importRules);
 
         let gInput = document.querySelectorAll(".e-input");
@@ -64,13 +74,48 @@ export class ViewRuleComponent implements OnInit {
           node.setAttribute('disabled', 'true');
         })
 
-        // Array.from(gInput).map((oldElement) => {
-        //   let newElement = oldElement.cloneNode(true);
-        //   oldElement.parentElement.replaceChild(newElement, oldElement);
-        // })
-
       }, 100)
     })
+  }
+
+  getStatusFromActive(status: boolean) {
+    return status ? "Active" : "Inactive";
+  }
+
+  reparseConditions(data: any) {
+    const result = {};
+    const o = Object.keys(data)[0] === 'all' ? "and" : "or";
+    result['condition'] = o;
+    result['rules'] = [];
+    let tmp = (o === 'and') ? data.all : data.or;
+    if (tmp && tmp.length) {
+      for (let i = 0; i < tmp.length; ++i) {
+        if (["all", "any"].includes(Object.keys(tmp[i])[0].toString())) {
+          result['rules'][i] = this.reparseConditions(tmp[i]);
+        }
+        else {
+          result['rules'][i] = {
+            field: tmp[i].fact,
+            operator: tmp[i].operator,
+            value: tmp[i].value
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  formatDateTime(timestemp: number) {
+    return moment(timestemp).format("DD/MM/YYYY -- hh:mm:ss");
+  }
+
+  formatFeeType(feetype: number): string {
+    let result = {
+      1: 'Phí dịch vụ',
+      2: 'Phí thanh toán',
+      3: 'Phí Offline'
+    };
+    return result[feetype];
   }
 
   goBack() {

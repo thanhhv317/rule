@@ -34,7 +34,8 @@ table#DataTables_Table_0 {
 }
 
 .status-inactive {
-    color: #aeea00;
+    /* color: #aeea00; */
+    color: #e04700;
 }
 
 .status-delete {
@@ -93,4 +94,8 @@ table#DataTables_Table_0 {
 
  ::ng-deep .custom-day.faded {
     background-color: rgba(2, 117, 216, 0.5);
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0 !important;
 }
