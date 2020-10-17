@@ -36,7 +36,7 @@ export class UpdateRuleComponent implements OnInit {
     [
       { field: 'Event name', name: 'type', type: "text" },
       { field: 'Connector name', name: 'connector_name', type: "text" },
-      { field: 'Limit', name: 'limit', type: "number"}
+      { field: 'Limit', name: 'limit', type: "number" }
     ],
     [],
     [
@@ -64,14 +64,7 @@ export class UpdateRuleComponent implements OnInit {
   feeTypeSelected: number;
 
   public isAdd = true;
-  event = {
-    type: '',
-    path: '',
-    e_value_base: null,
-    e_value_rate: null,
-    min_value: null,
-    max_value: null,
-  }
+  public event: Object;
 
   constructor(
     private ruleService: RuleService,
@@ -96,9 +89,26 @@ export class UpdateRuleComponent implements OnInit {
     ];
 
     this.actionSelected = this.listAction[0];
-
-
     this.getRule();
+  }
+
+  initEvent() {
+    this.event = {
+      type: '',
+      path: '',
+      e_value_base: null,
+      e_value_rate: null,
+      min_value: null,
+      max_value: null,
+    }
+  }
+
+  initEventWithTypeRoute(): void {
+    this.event = {
+      type: '',
+      connector_name: '',
+      limit: null
+    }
   }
 
   isChecked(check: boolean) {
@@ -114,10 +124,15 @@ export class UpdateRuleComponent implements OnInit {
       this.currentRule = data;
       this.tData = true;
       this.actionTypeSelected = this.currentRule.type;
-
       let action = this.actionType.find((x) => x.name === this.actionTypeSelected)
       this.actionSelected = this.listAction[Number(action.id)];
-
+      this.r_type = data.type;
+      if (data.type === 'route') {
+        this.initEventWithTypeRoute();
+      }
+      else {
+        this.initEvent();
+      }
       let condition = this.currentRule.conditions;
       setTimeout(() => {
         this.importRules = this.reparseConditions(JSON.parse(condition));
@@ -132,6 +147,7 @@ export class UpdateRuleComponent implements OnInit {
 
 
       let x = JSON.parse(this.currentRule.event).type;
+
       if (x) {
         this.action['value'] = [];
         let tmp = JSON.parse(this.currentRule.event).params;
@@ -145,7 +161,7 @@ export class UpdateRuleComponent implements OnInit {
 
   swapFeeType() {
     // set value 4 this.event after get data;
-    if (this.action !==undefined ) {
+    if (this.action !== undefined) {
       for (let item in this.action['value']) {
         this.event[item] = this.action['value'][item];
       }
@@ -160,7 +176,7 @@ export class UpdateRuleComponent implements OnInit {
 
   setValue4Input(name: string) {
     if (this.action['value']) {
-      return this.action['value'][name] !== undefined? this.action['value'][name] : null;
+      return this.action['value'][name] !== undefined ? this.action['value'][name] : null;
     }
     return null;
   }
@@ -182,13 +198,8 @@ export class UpdateRuleComponent implements OnInit {
     }
 
     if (this.r_type === 'restrict') {
-      this.event.type = "";
+      this.initEvent();
     }
-    if (this.r_type === 'route'){
-      delete this.event.min_value;
-      delete this.event.max_value;
-    }
-
   }
 
   selectFeeType(event: any) {
@@ -231,28 +242,40 @@ export class UpdateRuleComponent implements OnInit {
   }
 
   getValue(): void {
-
+    if (this.checkNull(this.currentRule.name === '', "The name of rule is require")) {
+      return;
+    };
+    if (this.checkNull(this.currentRule.priority === null || Number(this.currentRule.priority) === 0, "The priority of rule is not correct")) {
+      return;
+    };
+    if (this.checkNull(Number.isNaN(this.currentRule.from_date) || Number.isNaN(this.currentRule.to_date), "The from date and to date is require")) {
+      return;
+    };
     let eventResult = this.convertEvent(this.event);
-    console.log(eventResult);
-
-    // console.log(this.event);
-    // console.log(this.currentRule.fee_type);
-
-    // const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
-
-    // this.currentRule.conditions = JSON.stringify(conditions);
+    const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
+    this.currentRule.conditions = JSON.stringify(conditions);
+    this.currentRule.event =  (eventResult);
 
     // console.log(this.currentRule);
-
-
+    this.updateRule(this.currentRule);
 
   }
 
   convertEvent(data: any): any {
+    let result;
     if (data.type === '') return JSON.stringify({
       type: ""
-    });
-    let result = {
+    })
+    if (this.r_type === 'route') {
+      result = {
+        type: data.type,
+        params: {
+          connector_name: data.connector_name,
+          limit: data.limit
+        }
+      }
+    }
+    else result = {
       type: data.type,
       params: {
         path: data.path,
@@ -262,13 +285,11 @@ export class UpdateRuleComponent implements OnInit {
         max_value: Number(data.max_value)
       }
     };
-
-    for(let item in result.params) {
+    for (let item in result.params) {
       if (result.params[item] === null || result.params[item] === 0) {
         delete result.params[item];
       }
     }
-
     return JSON.stringify(result);
   }
 

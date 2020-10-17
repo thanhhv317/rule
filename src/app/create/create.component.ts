@@ -108,9 +108,15 @@ export class CreateComponent implements OnInit {
     }
   }
 
+  initEventWithTypeRoute(): void {
+    this.event = {
+      type:'',
+      connector_name: '',
+      limit: null
+    }
+  }
+
   onChangeDateEj2(args, field) {
-    // console.log(args.value);
-    // console.log(moment(args.value).valueOf());
     this.backendRule[field] = moment(args.value).valueOf();
   }
 
@@ -132,6 +138,9 @@ export class CreateComponent implements OnInit {
 
     if (this.r_type === 'restrict') {
       this.initEvent();
+    }
+    if (this.r_type==='route') {
+      this.initEventWithTypeRoute();
     }
   }
 
@@ -158,6 +167,7 @@ export class CreateComponent implements OnInit {
   }
 
   getValue(): void {
+
     if (this.checkNull(this.backendRule.name === '', "The name of rule is require")) {
       return;
     };
@@ -170,15 +180,27 @@ export class CreateComponent implements OnInit {
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     // console.log(JSON.stringify(conditions));
     this.backendRule.conditions = JSON.stringify(conditions);
-    console.log(this.backendRule);
     this.addData();
+    // console.log(this.backendRule);
+
   }
 
   convertEvent(data: any): any {
+    let result ;
     if (data.type === '') return JSON.stringify({
       type: ""
-    });
-    let result = {
+    })
+    
+    if (this.r_type==='route') {
+      result = {
+        type: data.type,
+        params: {
+          connector_name: data.connector_name,
+          limit: data.limit
+        }
+      }
+    }
+    else result = {
       type: data.type,
       params: {
         path: data.path,
