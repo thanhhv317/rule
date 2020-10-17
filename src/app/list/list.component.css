@@ -7,7 +7,7 @@ table#DataTables_Table_0 {
 }
 
 .btn-delete {
-    background-color: #97b498;
+    background-color: #e0f2f1;
     -webkit-transition: opacity 0.3s ease-in-out;
     -moz-transition: opacity 0.3s ease-in-out;
     -ms-transition: opacity 0.3s ease-in-out;
@@ -16,7 +16,7 @@ table#DataTables_Table_0 {
 }
 
 .btn-update {
-    background-color: #98ee99;
+    background-color: #b2ebf2;
     -webkit-transition: opacity 0.3s ease-in-out;
     -moz-transition: opacity 0.3s ease-in-out;
     -ms-transition: opacity 0.3s ease-in-out;
@@ -30,11 +30,10 @@ table#DataTables_Table_0 {
 }
 
 .status-active {
-    color: #00c853;
+    color: #0091ea;
 }
 
 .status-inactive {
-    /* color: #aeea00; */
     color: #e04700;
 }
 

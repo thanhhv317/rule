@@ -1,5 +1,5 @@
 .rule-status {
-    color: #64dd17;
+    color: #0091ea;
 }
 
 button.e-removerule.e-rule-delete.e-css.e-btn.e-small.e-round.e-icon-btn.e-control.e-tooltip.e-lib {
@@ -11,7 +11,7 @@ button#e-dropdown-btn_1 {
 }
 
 .rule-date {
-    background-color: #b2dfdb;
+    background-color: #e0f7fa40;
     padding: 4px 10px;
     border-radius: 5px;
 }

@@ -181,7 +181,6 @@ export class CreateComponent implements OnInit {
     // console.log(JSON.stringify(conditions));
     this.backendRule.conditions = JSON.stringify(conditions);
     this.addData();
-    // console.log(this.backendRule);
 
   }
 
@@ -251,7 +250,8 @@ export class CreateComponent implements OnInit {
   addData() {
     if (!this.isAdd) return;
     this.ruleService.addData(this.backendRule).subscribe((res) => {
-      console.log(res);
+      // console.log(res);
+      this.notifier.notify("success", 'Created Successfully');
     })
   }
 }
