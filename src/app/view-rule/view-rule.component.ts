@@ -15,7 +15,7 @@ export class ViewRuleComponent implements OnInit {
 
   public data: Object[];
   public importRules: RuleModel;
-  protected id: string;
+  public id: string;
   public currentRule: BackendRule;
   tData: boolean = false;
   public action = [];
