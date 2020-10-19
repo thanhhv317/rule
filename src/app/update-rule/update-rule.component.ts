@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { RuleModel, QueryBuilderComponent } from '@syncfusion/ej2-angular-querybuilder';
+import { RuleModel, QueryBuilderComponent, ColumnsModel, TemplateColumn } from '@syncfusion/ej2-angular-querybuilder';
 import { hardwareData } from './datasource';
 import { RuleService } from '../rule.service';
 import { BackendRule } from '../interfaces/backendRule';
@@ -8,6 +8,8 @@ import { NotifierService } from "angular-notifier";
 import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { ActionType } from '../interfaces/actionType';
+import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
+import { getComponent, createElement } from '@syncfusion/ej2-base';
 
 @Component({
   selector: 'app-update-rule',
@@ -77,10 +79,51 @@ export class UpdateRuleComponent implements OnInit {
 
   @ViewChild('querybuilder')
   public qryBldrObj: QueryBuilderComponent;
+  public filter: ColumnsModel[];
+  public inOperators: string[] = ['in', 'notin'];
+
+  public transactionTypeTemplate: TemplateColumn;
+  public serviceCodeTemplate: TemplateColumn;
+  public suplierCodeTemplate: TemplateColumn;
+  public paymentChanelTemplate: TemplateColumn;
+  public connectorTemplate: TemplateColumn;
+
+  //opeartor
+  public operator: any;
+
+  // value of condition
+  public valueOfCondition = [
+    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng'],
+    ['Topup', 'HĐ Điện', 'HĐ Nước', 'Mua mã thẻ(dt, game, data)'],
+    ['Viettel', 'Vinaphone', 'Mobifone'],
+    ['Ví ECO', 'COD', 'NH liên kết', 'NH hỗ trợ', 'eFund'],
+    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyễn tiền IBFP']
+  ]
 
   ngOnInit(): void {
     this.data = hardwareData;
     this.id = this.route.snapshot.paramMap.get('id');
+    this.transactionTypeTemplate = this.generateTemplate(this.valueOfCondition[0]);
+    this.serviceCodeTemplate = this.generateTemplate(this.valueOfCondition[1]);
+    this.suplierCodeTemplate = this.generateTemplate(this.valueOfCondition[2]);
+    this.paymentChanelTemplate = this.generateTemplate(this.valueOfCondition[3]);
+    this.connectorTemplate = this.generateTemplate(this.valueOfCondition[4]);
+
+    // init operator;
+    this.operator = [
+      { value: 'equal', key: 'Equal' },
+      { value: 'notequal', key: 'Not Equal' },
+      { value: 'in', key: 'In' },
+      { value: 'notin', key: 'Not In' }
+    ];
+
+    this.filter = [
+      { field: 'TransactionType', label: 'Transaction type', operators: this.operator, type: 'string', template: this.transactionTypeTemplate },
+      { field: 'ServiceCode', label: 'Service Code', operators: this.operator, type: 'string', template: this.serviceCodeTemplate },
+      { field: 'SupplierCode', label: 'Supplier  Code', operators: this.operator, type: 'string', template: this.suplierCodeTemplate },
+      { field: 'PaymentChanel', label: 'Payment Chanel', operators: this.operator, type: 'string', template: this.paymentChanelTemplate },
+      { field: 'Connector', label: 'Connector', operators: this.operator, type: 'string', template: this.connectorTemplate }
+    ];
     this.actionType = [
       { id: 0, name: 'bonus' },
       { id: 1, name: 'route' },
@@ -90,6 +133,47 @@ export class UpdateRuleComponent implements OnInit {
 
     this.actionSelected = this.listAction[0];
     this.getRule();
+  }
+
+  generateTemplate(ds: string[]) {
+    return {
+      create: () => {
+        return createElement('input', { attrs: { 'type': 'text' } });
+      },
+      destroy: (args: { elementId: string }) => {
+        let multiSelect: MultiSelect = (getComponent(document.getElementById(args.elementId), 'multiselect') as MultiSelect);
+        if (multiSelect) {
+          multiSelect.destroy();
+        }
+        let dropdown: DropDownList = (getComponent(document.getElementById(args.elementId), 'dropdownlist') as DropDownList);
+        if (dropdown) {
+          dropdown.destroy();
+        }
+      },
+      write: (args: { elements: Element, values: string[] | string, operator: string }) => {
+        if (this.inOperators.indexOf(args.operator) > -1) {
+          let multiSelectObj: MultiSelect = new MultiSelect({
+            dataSource: ds,
+            value: args.values as string[],
+            mode: 'CheckBox',
+            placeholder: 'Select Transaction',
+            change: (e: any) => {
+              this.qryBldrObj.notifyChange(e.value, e.element);
+            }
+          });
+          multiSelectObj.appendTo('#' + args.elements.id);
+        } else {
+          let dropDownObj: DropDownList = new DropDownList({
+            dataSource: ds,
+            value: args.values as string,
+            change: (e: any) => {
+              this.qryBldrObj.notifyChange(e.itemData.value, e.element);
+            }
+          });
+          dropDownObj.appendTo('#' + args.elements.id);
+        }
+      }
+    }
   }
 
   initEvent() {
@@ -116,7 +200,7 @@ export class UpdateRuleComponent implements OnInit {
   }
 
   convertDate(timestemp: number) {
-    return moment(timestemp).format('YYYY-MM-DDThh:mm:ss');
+    return moment(timestemp).format('YYYY-MM-DDTHH:mm:ss');
   }
 
   getRule(): void {

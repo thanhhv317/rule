@@ -1,10 +1,12 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { RuleModel, QueryBuilderComponent } from '@syncfusion/ej2-angular-querybuilder';
+import { RuleModel, QueryBuilderComponent, ColumnsModel, TemplateColumn } from '@syncfusion/ej2-angular-querybuilder';
 import { RuleService } from '../rule.service';
 import { NotifierService } from "angular-notifier";
 import { ActionType } from '../interfaces/actionType';
 import { BackendRule } from '../interfaces/backendRule';
 import * as moment from 'moment';
+import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
+import { getComponent, createElement } from '@syncfusion/ej2-base';
 
 @Component({
   selector: 'app-create',
@@ -24,31 +26,31 @@ export class CreateComponent implements OnInit {
     [
       { field: 'Event name', name: 'type', type: "text" },
       { field: 'Path', name: 'path', type: "text" },
-      { field: 'Phí cố định', name: 'e_value_base', type: "number" },
-      { field: 'Phí %', name: 'e_value_rate', type: "number" },
-      { field: 'Giá trị lớn nhất', name: 'max_value', type: "number" },
-      { field: 'Giá trị nhỏ nhất', name: 'min_value', type: "number" }
+      { field: 'Fixed value', name: 'e_value_base', type: "number" },
+      { field: 'Percent value (%)', name: 'e_value_rate', type: "number" },
+      { field: 'Max value', name: 'max_value', type: "number" },
+      { field: 'Min value', name: 'min_value', type: "number" }
     ],
     [
       { field: 'Event name', name: 'type', type: "text" },
       { field: 'Connector name', name: 'connector_name', type: "text" },
-      { field: 'Limit', name: 'limit', type: "number"}
+      { field: 'Limit', name: 'limit', type: "number" }
     ],
     [],
     [
       { field: 'Event name', name: 'type', type: "text" },
       { field: 'Path', name: 'path', type: "text" },
-      { field: 'Phí cố định', name: 'e_value_base', type: "number" },
-      { field: 'Phí %', name: 'e_value_rate', type: "number" },
-      { field: 'Giá trị lớn nhất', name: 'max_value', type: "number" },
-      { field: 'Giá trị nhỏ nhất', name: 'min_value', type: "number" }
+      { field: 'Fixed value', name: 'e_value_base', type: "number" },
+      { field: 'Percent value (%)', name: 'e_value_rate', type: "number" },
+      { field: 'Max value', name: 'max_value', type: "number" },
+      { field: 'Min value', name: 'min_value', type: "number" }
     ]
   ];
   public isFee: Boolean = false;
   public fee_type = [
-    { value: 1, field: 'Phí dịch vụ' },
-    { value: 2, field: 'Phí thanh toán' },
-    { value: 3, field: 'Phí offline' },
+    { value: 1, field: 'Service Fees' },
+    { value: 2, field: 'Payment Fees' },
+    { value: 3, field: 'Offline Fees' },
   ];
 
   actionSelected: Array<any>;
@@ -68,8 +70,53 @@ export class CreateComponent implements OnInit {
 
   @ViewChild('querybuilder')
   public qryBldrObj: QueryBuilderComponent;
+  public filter: ColumnsModel[];
+  public inOperators: string[] = ['in', 'notin'];
+
+  public transactionTypeTemplate: TemplateColumn;
+  public serviceCodeTemplate: TemplateColumn;
+  public suplierCodeTemplate: TemplateColumn;
+  public paymentChanelTemplate: TemplateColumn;
+  public connectorTemplate: TemplateColumn;
+
+  //opeartor
+  public operator: any;
+
+  // value of condition
+  public valueOfCondition = [
+    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng'],
+    ['Topup', 'HĐ Điện', 'HĐ Nước', 'Mua mã thẻ(dt, game, data)'],
+    ['Viettel', 'Vinaphone', 'Mobifone'],
+    ['Ví ECO', 'COD', 'NH liên kết', 'NH hỗ trợ', 'eFund'],
+    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyễn tiền IBFP']
+  ]
+
 
   ngOnInit(): void {
+
+    this.transactionTypeTemplate = this.generateTemplate(this.valueOfCondition[0]);
+    this.serviceCodeTemplate = this.generateTemplate(this.valueOfCondition[1]);
+    this.suplierCodeTemplate = this.generateTemplate(this.valueOfCondition[2]);
+    this.paymentChanelTemplate = this.generateTemplate(this.valueOfCondition[3]);
+    this.connectorTemplate = this.generateTemplate(this.valueOfCondition[4]);
+
+    // init operator;
+    this.operator = [
+      { value: 'equal', key: 'Equal' },
+      { value: 'notequal', key: 'Not Equal' },
+      { value: 'in', key: 'In' },
+      { value: 'notin', key: 'Not In' }
+    ];
+
+    this.filter = [
+      { field: 'TransactionType', label: 'Transaction type', operators: this.operator, type: 'string', template: this.transactionTypeTemplate },
+      { field: 'ServiceCode', label: 'Service Code', operators: this.operator, type: 'string', template: this.serviceCodeTemplate },
+      { field: 'SupplierCode', label: 'Supplier  Code', operators: this.operator, type: 'string', template: this.suplierCodeTemplate },
+      { field: 'PaymentChanel', label: 'Payment Chanel', operators: this.operator, type: 'string', template: this.paymentChanelTemplate },
+      { field: 'Connector', label: 'Connector', operators: this.operator, type: 'string', template: this.connectorTemplate }
+    ];
+
+    //end template ej2
     this.actionType = [
       { id: 1, name: 'bonus' },
       { id: 2, name: 'route' },
@@ -108,9 +155,50 @@ export class CreateComponent implements OnInit {
     }
   }
 
+  generateTemplate(ds: string[]) {
+    return {
+      create: () => {
+        return createElement('input', { attrs: { 'type': 'text' } });
+      },
+      destroy: (args: { elementId: string }) => {
+        let multiSelect: MultiSelect = (getComponent(document.getElementById(args.elementId), 'multiselect') as MultiSelect);
+        if (multiSelect) {
+          multiSelect.destroy();
+        }
+        let dropdown: DropDownList = (getComponent(document.getElementById(args.elementId), 'dropdownlist') as DropDownList);
+        if (dropdown) {
+          dropdown.destroy();
+        }
+      },
+      write: (args: { elements: Element, values: string[] | string, operator: string }) => {
+        if (this.inOperators.indexOf(args.operator) > -1) {
+          let multiSelectObj: MultiSelect = new MultiSelect({
+            dataSource: ds,
+            value: args.values as string[],
+            mode: 'CheckBox',
+            placeholder: 'Select Transaction',
+            change: (e: any) => {
+              this.qryBldrObj.notifyChange(e.value, e.element);
+            }
+          });
+          multiSelectObj.appendTo('#' + args.elements.id);
+        } else {
+          let dropDownObj: DropDownList = new DropDownList({
+            dataSource: ds,
+            value: args.values as string,
+            change: (e: any) => {
+              this.qryBldrObj.notifyChange(e.itemData.value, e.element);
+            }
+          });
+          dropDownObj.appendTo('#' + args.elements.id);
+        }
+      }
+    }
+  }
+
   initEventWithTypeRoute(): void {
     this.event = {
-      type:'',
+      type: '',
       connector_name: '',
       limit: null
     }
@@ -139,7 +227,7 @@ export class CreateComponent implements OnInit {
     if (this.r_type === 'restrict') {
       this.initEvent();
     }
-    if (this.r_type==='route') {
+    if (this.r_type === 'route') {
       this.initEventWithTypeRoute();
     }
   }
@@ -182,15 +270,17 @@ export class CreateComponent implements OnInit {
     this.backendRule.conditions = JSON.stringify(conditions);
     this.addData();
 
+    console.log(this.backendRule);
+
   }
 
   convertEvent(data: any): any {
-    let result ;
+    let result;
     if (data.type === '') return JSON.stringify({
       type: ""
     })
-    
-    if (this.r_type==='route') {
+
+    if (this.r_type === 'route') {
       result = {
         type: data.type,
         params: {
@@ -210,7 +300,7 @@ export class CreateComponent implements OnInit {
       }
     };
 
-    for(let item in result.params) {
+    for (let item in result.params) {
       if (result.params[item] === null || result.params[item] === 0) {
         delete result.params[item];
       }

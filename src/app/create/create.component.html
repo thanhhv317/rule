@@ -17,13 +17,13 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">From <span class="text-danger">*</span></label>
                 <div class="col-sm-10">
-                    <ejs-datetimepicker (change)='onChangeDateEj2($event, "from_date")'></ejs-datetimepicker>
+                    <ejs-datetimepicker (change)='onChangeDateEj2($event, "from_date")' format="dd/MM/yyyy HH:mm:ss" timeFormat="HH:mm:ss"></ejs-datetimepicker>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">To <span class="text-danger">*</span></label>
                 <div class="col-sm-10">
-                    <ejs-datetimepicker (change)='onChangeDateEj2($event , "to_date")'></ejs-datetimepicker>
+                    <ejs-datetimepicker (change)='onChangeDateEj2($event , "to_date")' format="dd/MM/yyyy HH:mm:ss" timeFormat="HH:mm:ss"></ejs-datetimepicker>
                 </div>
             </div>
         </div>
@@ -62,15 +62,8 @@
     <div class="form-group">
         <div class="form-group">
             <label>Conditions  <span class="text-danger">*</span></label>
-            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules">
-                <e-columns>
-                    <e-column field="TaskID" label="Task ID" type="number"></e-column>
-                    <e-column field="Name" label="Name" type="string"></e-column>
-                    <e-column field="Category" label="Category" type="string"></e-column>
-                    <e-column field="SerialNo" label="SerialNo" type="string"></e-column>
-                    <e-column field="InvoiceNo" label="InvoiceNo" type="string"></e-column>
-                    <e-column field="Status" label="Status" type="string"></e-column>
-                </e-columns>
+            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules" [columns]="filter">
+
             </ejs-querybuilder>
         </div>
     </div>
@@ -92,16 +85,17 @@
                     </option>
                 </select>
             </div>
-            <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
-
-        </div>
-        <div class="col-lg-6 col-md-6 col-12">
             <div class="form-group" *ngFor="let item of actionSelected">
                 <label for="inputEmail4">{{item.field}}</label>
                 <input [type]="item.type" [name]="item.name" class="form-control" (change)="onChange4Event($event)">
             </div>
+
+            <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12">
+
             <div class="form-group" *ngIf="isFee">
-                <label class="my-1 mr-2">Loại phí</label>
+                <label class="my-1 mr-2">Fee type</label>
                 <select class="custom-select my-1 mr-sm-2" [(ngModel)]="feeTypeSelected" (change)="selectFeeType($event)" name="fee_type">
                     <option *ngFor="let fee of fee_type" [ngValue]="fee.value">
                         {{fee.field}}

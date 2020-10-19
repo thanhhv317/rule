@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Rule } from '../interfaces/rule';
 import { BackendRule } from '../interfaces/backendRule';
 import * as moment from 'moment';
 import { RuleService } from '../rule.service';
 import { NotifierService } from "angular-notifier";
 import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Status } from '../interfaces/status';
+import {Router} from '@angular/router';
+
 
 class DataTablesResponse {
   data: any[];
@@ -48,7 +49,8 @@ export class ListComponent implements OnInit {
     private ruleService: RuleService,
     notifierService: NotifierService,
     private calendar: NgbCalendar,
-    public formatter: NgbDateParserFormatter
+    public formatter: NgbDateParserFormatter,
+    private router: Router
   ) {
     this.notifier = notifierService;
     // this.fromDate = calendar.getToday();
@@ -99,18 +101,19 @@ export class ListComponent implements OnInit {
           });
       },
       columns: [
-        { data: 'name' },
         { data: 'type' },
-        { data: 'from' },
-        { data: 'to' },
-        { data: 'status' },
+        { data: 'name' },
+        { data: 'from_date' },
+        { data: 'to_date' },
         { data: 'priority' },
+        { data: 'active' },
         { data: 'actions', searchable: false, orderable: false }
       ]
     };
   }
 
-  onDelete(id: string): void {
+  onDelete(event: any, id: string): void {
+    event.stopPropagation();
     if (confirm("DO YOU WANT DELETE IT?")) {
       this.rules.map((rule) => {
         rule._id === id ? rule.active = false : ''
@@ -134,7 +137,7 @@ export class ListComponent implements OnInit {
   }
 
   formatDateTime(timestemp: number) {
-    return moment(timestemp).format("DD/MM/YYYY - hh:mm A");
+    return moment(timestemp).format("DD/MM/YYYY - HH:mm:ss");
   }
 
   onFilter() {
@@ -147,7 +150,7 @@ export class ListComponent implements OnInit {
   }
 
   convertNgbDate2String(date: NgbDate | null): number {
-    if(!date) return null;
+    if (!date) return null;
     const jsDate = new Date(date.year, date.month - 1, date.day);
     return moment(jsDate).valueOf();
   }
@@ -184,6 +187,12 @@ export class ListComponent implements OnInit {
   validateInput(currentValue: NgbDate | null, input: string): NgbDate | null {
     const parsed = this.formatter.parse(input);
     return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
+  }
+
+  // view detail
+  viewDetail(id: string): void {
+    let path = '/detail/' + id;
+    this.router.navigateByUrl(path);
   }
 
 }

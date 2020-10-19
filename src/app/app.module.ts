@@ -23,6 +23,8 @@ import { CreateComponent } from './create/create.component';
 import { DateTimePickerModule } from "@syncfusion/ej2-angular-calendars";
 
 
+
+
 /**
  * Custom angular notifier options
  */
@@ -71,7 +73,7 @@ const customNotifierOptions: NotifierOptions = {
   imports: [BrowserModule, QueryBuilderModule, DialogModule,
     AppRoutingModule, HttpClientModule, DataTablesModule,
     NotifierModule.withConfig(customNotifierOptions),
-    NgbModule, FormsModule, DateTimePickerModule
+    NgbModule, FormsModule, DateTimePickerModule,
   ], // Declaration of QueryBuilder module into NgModule.
   declarations: [AppComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent, CreateComponent],
   bootstrap: [AppComponent]
