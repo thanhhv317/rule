@@ -145,7 +145,6 @@ export class UpdateRuleComponent implements OnInit {
         this.isFee = true;
       }
 
-
       let x = JSON.parse(this.currentRule.event).type;
 
       if (x) {
@@ -254,11 +253,9 @@ export class UpdateRuleComponent implements OnInit {
     let eventResult = this.convertEvent(this.event);
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.currentRule.conditions = JSON.stringify(conditions);
-    this.currentRule.event =  (eventResult);
+    this.currentRule.event = (eventResult);
 
-    // console.log(this.currentRule);
     this.updateRule(this.currentRule);
-
   }
 
   convertEvent(data: any): any {
@@ -330,7 +327,7 @@ export class UpdateRuleComponent implements OnInit {
     const o = Object.keys(data)[0] === 'all' ? "and" : "or";
     result['condition'] = o;
     result['rules'] = [];
-    let tmp = (o === 'and') ? data.all : data.or;
+    let tmp = (o === 'and') ? data.all : data.any;
     if (tmp && tmp.length) {
       for (let i = 0; i < tmp.length; ++i) {
         if (["all", "any"].includes(Object.keys(tmp[i])[0].toString())) {

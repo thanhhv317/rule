@@ -87,7 +87,7 @@ export class ViewRuleComponent implements OnInit {
     const o = Object.keys(data)[0] === 'all' ? "and" : "or";
     result['condition'] = o;
     result['rules'] = [];
-    let tmp = (o === 'and') ? data.all : data.or;
+    let tmp = (o === 'and') ? data.all : data.any;
     if (tmp && tmp.length) {
       for (let i = 0; i < tmp.length; ++i) {
         if (["all", "any"].includes(Object.keys(tmp[i])[0].toString())) {
@@ -106,7 +106,7 @@ export class ViewRuleComponent implements OnInit {
   }
 
   formatDateTime(timestemp: number) {
-    return moment(timestemp).format("DD/MM/YYYY -- hh:mm:ss");
+    return moment(timestemp).format("DD/MM/YYYY - hh:mm A");
   }
 
   formatFeeType(feetype: number): string {

@@ -8,11 +8,11 @@
         <div class="col-lg-6 col-md-6 col-12">
             <div class="form-group">
                 <label>Rule name <span class="text-danger">*</span></label>
-                <input type="text" name="name" class="form-control" (change)="onChange($event)">
+                <input type="text" value="{{backendRule.name}}" name="name" class="form-control" (change)="onChange($event)">
             </div>
             <div class="form-group">
                 <label for="inputEmail4">Priority <span class="text-danger">*</span></label>
-                <input type="text" name="priority" class="form-control" (change)="onChange($event)">
+                <input type="text" value="{{backendRule.priority}}" name="priority" class="form-control" (change)="onChange($event)">
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">From <span class="text-danger">*</span></label>
@@ -49,7 +49,7 @@
             </fieldset>
             <div class="form-group">
                 <label>Description</label>
-                <textarea class="form-control" name="description" cols="5" (change)="onChange($event)"></textarea>
+                <textarea class="form-control" value="{{backendRule.description}}" name="description" cols="5" (change)="onChange($event)"></textarea>
             </div>
         </div>
     </div>

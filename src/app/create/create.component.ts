@@ -252,6 +252,8 @@ export class CreateComponent implements OnInit {
     this.ruleService.addData(this.backendRule).subscribe((res) => {
       // console.log(res);
       this.notifier.notify("success", 'Created Successfully');
+      this.backendRule.name = '';
+      this.backendRule.priority = null;
     })
   }
 }

@@ -15,3 +15,7 @@ button#e-dropdown-btn_1 {
     padding: 4px 10px;
     border-radius: 5px;
 }
+
+.btn-update {
+    background-color: #80deea;
+}

@@ -134,7 +134,7 @@ export class ListComponent implements OnInit {
   }
 
   formatDateTime(timestemp: number) {
-    return moment(timestemp).format("DD/MM/YYYY -- hh:mm:ss");
+    return moment(timestemp).format("DD/MM/YYYY - hh:mm A");
   }
 
   onFilter() {

@@ -1,6 +1,7 @@
 <div class="container">
     <div class="d-flex flex-row-reverse">
         <button class="btn btn-primary mb-4" (click)="goBack()">BACK</button>
+        <a class="btn btn-update mb-4 mr-2" routerLink="/update/{{id}}">UPDATE</a>
     </div>
     <div *ngIf="currentRule !== undefined">
 
