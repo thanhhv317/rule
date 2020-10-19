@@ -59,7 +59,7 @@ table#DataTables_Table_0 {
     background-color: #e0f2f1;
 }
 
-::ng-deep div#DataTables_Table_0_length>label {
+::ng-deep div.dataTables_length>label {
     margin-top: 0.25rem !important;
 }
 
@@ -97,4 +97,8 @@ table#DataTables_Table_0 {
 
 .margin-bottom-0 {
     margin-bottom: 0 !important;
+}
+
+::ng-deep div.dataTables_wrapper.no-footer {
+    min-height: 400px;
 }

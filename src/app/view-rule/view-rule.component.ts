@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
+import { Helper } from '../utils/helper';
 
 
 @Component({
@@ -16,6 +17,8 @@ import { getComponent, createElement } from '@syncfusion/ej2-base';
 })
 
 export class ViewRuleComponent implements OnInit {
+
+  helper = new Helper();
 
   public data: Object[];
   public importRules: RuleModel;
@@ -51,11 +54,11 @@ export class ViewRuleComponent implements OnInit {
 
   // value of condition
   public valueOfCondition = [
-    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng'],
+    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng', 'Chuyển tiền về từ ngân hàng'],
     ['Topup', 'HĐ Điện', 'HĐ Nước', 'Mua mã thẻ(dt, game, data)'],
     ['Viettel', 'Vinaphone', 'Mobifone'],
     ['Ví ECO', 'COD', 'NH liên kết', 'NH hỗ trợ', 'eFund'],
-    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyễn tiền IBFP']
+    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyển tiền IBFP']
   ]
 
 
@@ -119,22 +122,6 @@ export class ViewRuleComponent implements OnInit {
       setTimeout(() => {
         this.importRules = (condition);
         this.qryBldrObj.setRules(this.importRules);
-
-        let gInput = document.querySelectorAll(".e-input");
-        Array.from(gInput).map((node) => {
-          node.setAttribute('readonly', 'true');
-        })
-
-        let conditionAnd = document.querySelectorAll(".e-btngroup-and");
-        Array.from(conditionAnd).map((node) => {
-          node.setAttribute('disabled', 'true');
-        })
-
-        let conditionOr = document.querySelectorAll(".e-btngroup-or");
-        Array.from(conditionOr).map((node) => {
-          node.setAttribute('disabled', 'true');
-        })
-
       }, 100)
     })
   }
@@ -200,7 +187,7 @@ export class ViewRuleComponent implements OnInit {
           result['rules'][i] = {
             field: tmp[i].fact,
             operator: tmp[i].operator,
-            value: tmp[i].value
+            value: this.helper.getKeyFromValue(tmp[i].value)
           }
         }
       }

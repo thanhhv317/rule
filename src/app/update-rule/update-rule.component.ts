@@ -10,6 +10,8 @@ import * as moment from 'moment';
 import { ActionType } from '../interfaces/actionType';
 import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
+import { Helper } from '../utils/helper';
+
 
 @Component({
   selector: 'app-update-rule',
@@ -18,6 +20,7 @@ import { getComponent, createElement } from '@syncfusion/ej2-base';
 })
 export class UpdateRuleComponent implements OnInit {
 
+  helper = new Helper();
   public data: Object[];
   public importRules: RuleModel;
   protected id: string;
@@ -93,11 +96,11 @@ export class UpdateRuleComponent implements OnInit {
 
   // value of condition
   public valueOfCondition = [
-    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng'],
+    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng', 'Chuyển tiền về từ ngân hàng'],
     ['Topup', 'HĐ Điện', 'HĐ Nước', 'Mua mã thẻ(dt, game, data)'],
     ['Viettel', 'Vinaphone', 'Mobifone'],
     ['Ví ECO', 'COD', 'NH liên kết', 'NH hỗ trợ', 'eFund'],
-    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyễn tiền IBFP']
+    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyển tiền IBFP']
   ]
 
   ngOnInit(): void {
@@ -398,7 +401,7 @@ export class UpdateRuleComponent implements OnInit {
           result[o][i] = {
             fact: data.rules[i].field,
             operator: data.rules[i].operator,
-            value: data.rules[i].value,
+            value: this.helper.getValueFromKey(data.rules[i].value),
           }
         }
       }
@@ -421,7 +424,7 @@ export class UpdateRuleComponent implements OnInit {
           result['rules'][i] = {
             field: tmp[i].fact,
             operator: tmp[i].operator,
-            value: tmp[i].value
+            value: this.helper.getKeyFromValue(tmp[i].value)
           }
         }
       }

@@ -7,6 +7,8 @@ import { BackendRule } from '../interfaces/backendRule';
 import * as moment from 'moment';
 import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
+import { Helper } from '../utils/helper';
+
 
 @Component({
   selector: 'app-create',
@@ -14,6 +16,8 @@ import { getComponent, createElement } from '@syncfusion/ej2-base';
   styleUrls: ['./create.component.css']
 })
 export class CreateComponent implements OnInit {
+
+  helper = new Helper();
 
   public data: Object[];
   public importRules: RuleModel;
@@ -84,11 +88,11 @@ export class CreateComponent implements OnInit {
 
   // value of condition
   public valueOfCondition = [
-    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng'],
+    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng', 'Chuyển tiền về từ ngân hàng'],
     ['Topup', 'HĐ Điện', 'HĐ Nước', 'Mua mã thẻ(dt, game, data)'],
     ['Viettel', 'Vinaphone', 'Mobifone'],
     ['Ví ECO', 'COD', 'NH liên kết', 'NH hỗ trợ', 'eFund'],
-    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyễn tiền IBFP']
+    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyển tiền IBFP']
   ]
 
 
@@ -262,6 +266,9 @@ export class CreateComponent implements OnInit {
     if (this.checkNull(this.backendRule.priority === null || Number(this.backendRule.priority) === 0, "The priority of rule is not correct")) {
       return;
     };
+    if (this.checkNull(Number.isNaN(this.backendRule.from_date) || this.backendRule.from_date === null || Number.isNaN(this.backendRule.to_date) || this.backendRule.to_date === null, "The from date and to date is require")) {
+      return;
+    };
     let event = this.convertEvent(this.event);
     this.backendRule.event = event;
     this.backendRule.active = this.status;
@@ -270,7 +277,6 @@ export class CreateComponent implements OnInit {
     this.backendRule.conditions = JSON.stringify(conditions);
     this.addData();
 
-    console.log(this.backendRule);
 
   }
 
@@ -329,7 +335,7 @@ export class CreateComponent implements OnInit {
           result[o][i] = {
             fact: data.rules[i].field,
             operator: data.rules[i].operator,
-            value: data.rules[i].value,
+            value: this.helper.getValueFromKey(data.rules[i].value),
           }
         }
       }
