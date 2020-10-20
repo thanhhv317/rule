@@ -102,3 +102,7 @@ table#DataTables_Table_0 {
 ::ng-deep div.dataTables_wrapper.no-footer {
     min-height: 400px;
 }
+
+td:hover {
+    cursor: pointer;
+}

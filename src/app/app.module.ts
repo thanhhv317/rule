@@ -21,6 +21,7 @@ import { CreateComponent } from './create/create.component';
 
 // import the DateTimePickerModule for the DateTimePicker component
 import { DateTimePickerModule } from "@syncfusion/ej2-angular-calendars";
+import { CurrencyPipe } from '@angular/common';
 
 
 
@@ -76,6 +77,8 @@ const customNotifierOptions: NotifierOptions = {
     NgbModule, FormsModule, DateTimePickerModule,
   ], // Declaration of QueryBuilder module into NgModule.
   declarations: [AppComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent, CreateComponent],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [CurrencyPipe],
+
 })
 export class AppModule { }

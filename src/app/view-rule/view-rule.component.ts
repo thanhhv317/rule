@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
 import { Helper } from '../utils/helper';
+import { CurrencyPipe } from '@angular/common';
 
 
 @Component({
@@ -37,7 +38,8 @@ export class ViewRuleComponent implements OnInit {
   constructor(
     private ruleService: RuleService,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private currencyPipe:CurrencyPipe
   ) { }
 
   @ViewChild('querybuilder')
@@ -127,6 +129,7 @@ export class ViewRuleComponent implements OnInit {
 
       }, 100)
     })
+
   }
 
   generateTemplate(ds: string[]) {
@@ -169,7 +172,6 @@ export class ViewRuleComponent implements OnInit {
       }
     }
   }
-
 
   getStatusFromActive(status: boolean) {
     return status ? "Active" : "Inactive";
@@ -220,6 +222,11 @@ export class ViewRuleComponent implements OnInit {
       return o.key === str;
     })
     return kq.value;
+  }
+
+  formatPrice(price: any) {
+    if (Number(price) > 999) return (this.currencyPipe.transform(price, 'VND', '' ));
+    return price;
   }
 
 }

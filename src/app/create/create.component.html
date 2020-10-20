@@ -1,111 +1,125 @@
 <div class="container">
-    <!-- Begin rule information -->
-    <div class="title">
-        <h4>Rule information</h4>
-    </div>
 
-    <div class="form-row">
-        <div class="col-lg-6 col-md-6 col-12">
-            <div class="form-group">
-                <label>Rule name <span class="text-danger">*</span></label>
-                <input type="text" value="{{backendRule.name}}" name="name" class="form-control" (change)="onChange($event)">
-            </div>
-            <div class="form-group">
-                <label for="inputEmail4">Priority <span class="text-danger">*</span></label>
-                <input type="text" value="{{backendRule.priority}}" name="priority" class="form-control" (change)="onChange($event)">
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">From <span class="text-danger">*</span></label>
-                <div class="col-sm-10">
-                    <ejs-datetimepicker (change)='onChangeDateEj2($event, "from_date")' format="dd/MM/yyyy HH:mm:ss" timeFormat="HH:mm:ss"></ejs-datetimepicker>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">To <span class="text-danger">*</span></label>
-                <div class="col-sm-10">
-                    <ejs-datetimepicker (change)='onChangeDateEj2($event , "to_date")' format="dd/MM/yyyy HH:mm:ss" timeFormat="HH:mm:ss"></ejs-datetimepicker>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 col-md-6 col-12">
-            <fieldset class="form-group status-form">
-                <div class="row">
-                    <legend class="col-form-label col-sm-2 pt-0">Status</legend>
-                    <div class="col-sm-10">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="status" value="ACTIVE" (change)="onChange($event)" checked>
-                            <label class="form-check-label">
-                                Active
-                            </label>
+
+
+
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active rule_tab" id="information-tab" data-toggle="tab" href="#information" role="tab" aria-controls="information" aria-selected="true">Rule informations</a>
+        </li>
+        <li class="nav-item rule_tab">
+            <a class="nav-link" id="condition-tab" data-toggle="tab" href="#condition" role="tab" aria-controls="condition" aria-selected="false">Conditions</a>
+        </li>
+        <li class="nav-item rule_tab">
+            <a class="nav-link" id="actions-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions" aria-selected="false">Actions</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="information" role="tabpanel" aria-labelledby="information-tab">
+            <!-- Begin rule information -->
+            <br>
+            <div class="form-row">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="form-group">
+                        <label>Rule name <span class="text-danger">*</span></label>
+                        <input type="text" value="{{backendRule.name}}" name="name" class="form-control" (change)="onChange($event)">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Priority <span class="text-danger">*</span></label>
+                        <input type="text" value="{{backendRule.priority}}" name="priority" class="form-control" (change)="onChange($event)">
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">From <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <ejs-datetimepicker (change)='onChangeDateEj2($event, "from_date")' format="dd/MM/yyyy HH:mm:ss" timeFormat="HH:mm:ss"></ejs-datetimepicker>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="status" value="INACTIVE" (change)="onChange($event)">
-                            <label class="form-check-label">
-                                Inactive
-                            </label>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">To <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <ejs-datetimepicker (change)='onChangeDateEj2($event , "to_date")' format="dd/MM/yyyy HH:mm:ss" timeFormat="HH:mm:ss"></ejs-datetimepicker>
                         </div>
                     </div>
                 </div>
-            </fieldset>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea class="form-control" value="{{backendRule.description}}" name="description" cols="5" (change)="onChange($event)"></textarea>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <fieldset class="form-group status-form">
+                        <div class="row">
+                            <legend class="col-form-label col-sm-2 pt-0">Status</legend>
+                            <div class="col-sm-10">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" value="ACTIVE" (change)="onChange($event)" checked>
+                                    <label class="form-check-label">
+                            Active
+                        </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" value="INACTIVE" (change)="onChange($event)">
+                                    <label class="form-check-label">
+                            Inactive
+                        </label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" value="{{backendRule.description}}" name="description" cols="5" (change)="onChange($event)"></textarea>
+                    </div>
+                </div>
             </div>
+            <!-- end rule information -->
         </div>
-    </div>
-    <!-- end rule information -->
-
-    <!-- begin rule conditions -->
-    <div class="title">
-        <h4>Conditions</h4>
-    </div>
-    <div class="form-group">
-        <div class="form-group">
-            <label>Conditions  <span class="text-danger">*</span></label>
-            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules" [columns]="filter">
-
-            </ejs-querybuilder>
-        </div>
-    </div>
-    <!-- end rule conditions -->
-
-    <!-- begin rule actions -->
-    <br>
-    <div class="title">
-        <h4>Actions</h4>
-    </div>
-
-    <div class="form-row">
-        <div class="col-lg-6 col-md-6 col-12">
+        <div class="tab-pane fade" id="condition" role="tabpanel" aria-labelledby="condition-tab">
+            <!-- begin rule conditions -->
+            <br>
             <div class="form-group">
-                <label class="my-1 mr-2">Type <span class="text-danger">*</span></label>
-                <select class="custom-select my-1 mr-sm-2" name="actionType" [(ngModel)]="actionTypeSelected" (change)="selectChangeHandler($event)">
+                <div class="form-group">
+                    <label>Conditions  <span class="text-danger">*</span></label>
+                    <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules" [columns]="filter">
+
+                    </ejs-querybuilder>
+                </div>
+            </div>
+            <!-- end rule conditions -->
+        </div>
+        <div class="tab-pane fade" id="actions" role="tabpanel" aria-labelledby="actions-tab">
+            <!-- begin rule actions -->
+            <br>
+
+            <div class="form-row">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="form-group">
+                        <label class="my-1 mr-2">Type <span class="text-danger">*</span></label>
+                        <select class="custom-select my-1 mr-sm-2" name="actionType" [(ngModel)]="actionTypeSelected" (change)="selectChangeHandler($event)">
                     <option *ngFor="let type of actionType" [ngValue]="type.name">
                         {{type.name}}
                     </option>
                 </select>
-            </div>
-            <div class="form-group" *ngFor="let item of actionSelected">
-                <label for="inputEmail4">{{item.field}}</label>
-                <input [type]="item.type" [name]="item.name" class="form-control" (change)="onChange4Event($event)">
-            </div>
+                    </div>
+                    <div class="form-group" *ngFor="let item of actionSelected">
+                        <label for="inputEmail4">{{item.field}}</label>
+                        <input [type]="item.type" [name]="item.name" class="form-control" value="{{event[item.name] | currency: 'VND' : ''}}" (change)="onChange4Event($event)">
+                    </div>
 
-            <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
-        </div>
-        <div class="col-lg-6 col-md-6 col-12">
+                    <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
 
-            <div class="form-group" *ngIf="isFee">
-                <label class="my-1 mr-2">Fee type</label>
-                <select class="custom-select my-1 mr-sm-2" [(ngModel)]="feeTypeSelected" (change)="selectFeeType($event)" name="fee_type">
+                    <div class="form-group" *ngIf="isFee">
+                        <label class="my-1 mr-2">Fee type</label>
+                        <select class="custom-select my-1 mr-sm-2" [(ngModel)]="feeTypeSelected" (change)="selectFeeType($event)" name="fee_type">
                     <option *ngFor="let fee of fee_type" [ngValue]="fee.value">
                         {{fee.field}}
                     </option>
                 </select>
+                    </div>
+                </div>
             </div>
+            <!-- end rule actions -->
         </div>
     </div>
 
 
-    <!-- end rule actions -->
 
 </div>

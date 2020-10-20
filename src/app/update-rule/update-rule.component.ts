@@ -308,6 +308,7 @@ export class UpdateRuleComponent implements OnInit {
 
   updateRule(rule: BackendRule) {
     try {
+      if(!this.isAdd) return;
       this.ruleService
         .updateData(this.id, rule).subscribe(
           res => {
