@@ -99,7 +99,7 @@
                     </div>
                     <div class="form-group" *ngFor="let item of actionSelected">
                         <label for="inputEmail4">{{item.field}}</label>
-                        <input [type]="item.type" [name]="item.name" class="form-control" value="{{event[item.name] | currency: 'VND' : ''}}" (change)="onChange4Event($event)">
+                        <input type="text" [name]="item.name" class="form-control" value="{{event[item.name]}}" (blur)="onBlur(item.name)" (focus)="onFocus(item.name)" (change)="onChange4Event($event)">
                     </div>
 
                     <button class="e-btn e-primary e-qbr-button btn btn-success" (click)="getValue()">SAVE</button>

@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
 import { Helper } from '../utils/helper';
-
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-create',
@@ -68,7 +68,8 @@ export class CreateComponent implements OnInit {
 
   event: Object;
 
-  constructor(private ruleService: RuleService, notifierService: NotifierService) {
+  constructor(private ruleService: RuleService, notifierService: NotifierService,
+    private currencyPipe: CurrencyPipe) {
     this.notifier = notifierService;
   }
 
@@ -274,6 +275,7 @@ export class CreateComponent implements OnInit {
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.backendRule.conditions = JSON.stringify(conditions);
     this.addData();
+    // console.log(this.backendRule)
   }
 
   convertEvent(data: any): any {
@@ -291,17 +293,21 @@ export class CreateComponent implements OnInit {
         }
       }
     }
-    else result = {
-      type: data.type,
-      params: {
-        path: data.path,
-        e_value_base: Number(data.e_value_base),
-        e_value_rate: Number(data.e_value_rate),
-        min_value: Number(data.min_value),
-        max_value: Number(data.max_value)
-      }
-    };
-
+    else {
+      data.e_value_base = data.e_value_base || '';
+      data.min_value = data.min_value || '';
+      data.max_value = data.max_value || '';
+      result = {
+        type: data.type,
+        params: {
+          path: data.path,
+          e_value_base: Number(data.e_value_base.replace(/\D/g, '')),
+          e_value_rate: Number(data.e_value_rate),
+          min_value: Number(data.min_value.replace(/\D/g, '')),
+          max_value: Number(data.max_value.replace(/\D/g, ''))
+        }
+      };
+    }
     for (let item in result.params) {
       if (result.params[item] === null || result.params[item] === 0) {
         delete result.params[item];
@@ -346,5 +352,18 @@ export class CreateComponent implements OnInit {
       this.backendRule.name = '';
       this.backendRule.priority = null;
     })
+  }
+
+  onBlur(key: string) {
+    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+      this.event[key] = this.event[key] || "";
+      this.event[key] = this.currencyPipe.transform(this.event[key].replace(/\D/g, ''), 'VND', '')
+    }
+  }
+
+  onFocus(key: string) {
+    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+      this.event[key] = this.event[key] ? this.event[key].replace(/\D/g, '') : ""
+    }
   }
 }
