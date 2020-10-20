@@ -25,10 +25,12 @@ export class ViewRuleComponent implements OnInit {
   public id: string;
   public currentRule: BackendRule;
   tData: boolean = false;
-  public action = [];
+  public action = [
+    'type', 'key', 'value'
+  ];
 
 
-  public translateAtion;
+  public translateAtion: any;
 
   public showButtons: Object = { groupInsert: false, groupDelete: false, ruleDelete: false }
 
@@ -122,6 +124,7 @@ export class ViewRuleComponent implements OnInit {
       setTimeout(() => {
         this.importRules = (condition);
         this.qryBldrObj.setRules(this.importRules);
+
       }, 100)
     })
   }

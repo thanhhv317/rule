@@ -95,7 +95,6 @@ export class CreateComponent implements OnInit {
     ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyển tiền IBFP']
   ]
 
-
   ngOnInit(): void {
 
     this.transactionTypeTemplate = this.generateTemplate(this.valueOfCondition[0]);
@@ -273,11 +272,8 @@ export class CreateComponent implements OnInit {
     this.backendRule.event = event;
     this.backendRule.active = this.status;
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
-    // console.log(JSON.stringify(conditions));
     this.backendRule.conditions = JSON.stringify(conditions);
     this.addData();
-
-
   }
 
   convertEvent(data: any): any {
@@ -346,7 +342,6 @@ export class CreateComponent implements OnInit {
   addData() {
     if (!this.isAdd) return;
     this.ruleService.addData(this.backendRule).subscribe((res) => {
-      // console.log(res);
       this.notifier.notify("success", 'Created Successfully');
       this.backendRule.name = '';
       this.backendRule.priority = null;

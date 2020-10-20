@@ -19,3 +19,7 @@ button#e-dropdown-btn_1 {
 .btn-update {
     background-color: #80deea;
 }
+
+.e-group-action {
+    display: none !important;
+}

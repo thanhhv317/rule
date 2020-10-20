@@ -25,7 +25,7 @@
         <fieldset class="form-group">
             <div class="row">
                 <legend class="col-form-label col-sm-2 pt-0">Status:</legend>
-                <label class="col-sm-10 col-form-label rule-status"> {{getStatusFromActive(currentRule.status)}}</label>
+                <label class="col-sm-10 col-form-label rule-status"> {{getStatusFromActive(currentRule.active)}}</label>
             </div>
         </fieldset>
         <div class="form-group row">
@@ -43,7 +43,7 @@
         <!-- begin rule conditions -->
         <h4>Conditions</h4>
         <div class="form-group row">
-            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules" *ngIf="tData" [showButtons]="showButtons" [columns]="filter" readonly="true">
+            <ejs-querybuilder #querybuilder class="row" width="100%" [dataSource]="data" [rule]="importRules" *ngIf="tData" [showButtons]="showButtons" [columns]="filter" readonly="true" enablePersistence=true>
 
             </ejs-querybuilder>
         </div>
@@ -51,17 +51,17 @@
 
         <!-- begin rule actions -->
         <h4>Actions</h4>
-        <div *ngIf="action.type">
+        <div *ngIf="action['type']">
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Action name: </label>
                 <div class="col-sm-10">
-                    <input type="text" readonly class="form-control" value="{{action.type}}">
+                    <input type="text" readonly class="form-control" value="{{action['type']}}">
                 </div>
             </div>
-            <div class="form-group row" *ngFor="let i of action.key">
+            <div class="form-group row" *ngFor="let i of action['key']">
                 <label class="col-sm-2 col-form-label">{{translateActionName(i)}}:</label>
                 <div class="col-sm-10">
-                    <input type="text" readonly class="form-control" value="{{action.value[i]}}">
+                    <input type="text" readonly class="form-control" value="{{action['value'][i]}}">
                 </div>
             </div>
 
