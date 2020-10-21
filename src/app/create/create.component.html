@@ -105,7 +105,7 @@
                 <div class="col-lg-6 col-md-6 col-12" *ngFor="let item of actionSelected">
                     <div class="form-group">
                         <label for="inputEmail4">{{item.field}}</label>
-                        <input type="text" [name]="item.name" class="form-control" value="{{event[item.name]}}" (blur)="onBlur(item.name)" (focus)="onFocus(item.name)" (change)="onChange4Event($event)">
+                        <input type="text" (keyup)="onKey($event, item.name)" [name]="item.name" class="form-control" value="{{event[item.name]}}" (blur)="onBlur(item.name)" (focus)="onFocus(item.name)" (change)="onChange4Event($event)">
                     </div>
 
                 </div>

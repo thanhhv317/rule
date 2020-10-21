@@ -246,7 +246,6 @@ export class CreateComponent implements OnInit {
   onChange(event: any) { // without type info
     let nam = event.target.name;
     let val = event.target.value;
-    console.log(val)
     if (nam === 'status') {
       this.status = val === "ACTIVE" ? true : false;
     }
@@ -365,12 +364,19 @@ export class CreateComponent implements OnInit {
   }
 
   onFocus(key: string) {
-    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
-      this.event[key] = this.event[key] ? this.event[key].replace(/\D/g, '') : ""
-    }
+    // if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+    //   this.event[key] = this.event[key] ? this.event[key].replace(/\D/g, '') : ""
+    // }
   }
 
   goBack() {
     this.location.back();
+  }
+
+  onKey(event: any, key: string) {
+    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+      this.event[key] = this.event[key] || "";
+      this.event[key] = this.currencyPipe.transform(event.target.value.replace(/\D/g, ''), 'VND', '')
+    }
   }
 }

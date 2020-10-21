@@ -445,9 +445,9 @@ export class UpdateRuleComponent implements OnInit {
   }
 
   onFocus(key: string) {
-    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
-      this.event[key] = this.event[key] ? this.event[key].toString().replace(/\D/g, '') : '';
-    }
+    // if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+    //   this.event[key] = this.event[key] ? this.event[key].toString().replace(/\D/g, '') : '';
+    // }
   }
 
   formatInput(key: string) {
@@ -463,4 +463,12 @@ export class UpdateRuleComponent implements OnInit {
     let path = '/';
     this.router.navigateByUrl(path);
   }
+
+  onKey(event: any, key: string) {
+    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+      this.event[key] = this.event[key] || "";
+      this.event[key] = this.currencyPipe.transform(event.target.value.toString().replace(/\D/g, ''), 'VND', '')
+    }
+  }
+
 }
