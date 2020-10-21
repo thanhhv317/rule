@@ -11,6 +11,8 @@ import { ActionType } from '../interfaces/actionType';
 import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
 import { Helper } from '../utils/helper';
+import { CurrencyPipe } from '@angular/common';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -70,12 +72,15 @@ export class UpdateRuleComponent implements OnInit {
 
   public isAdd = true;
   public event: Object;
+  public isFormat: Boolean = true;
 
   constructor(
     private ruleService: RuleService,
     notifierService: NotifierService,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private currencyPipe: CurrencyPipe,
+    private router: Router
   ) {
     this.notifier = notifierService;
   }
@@ -260,13 +265,6 @@ export class UpdateRuleComponent implements OnInit {
     this.event[nam] = val;
   }
 
-  setValue4Input(name: string) {
-    if (this.action['value']) {
-      return this.action['value'][name] !== undefined ? this.action['value'][name] : null;
-    }
-    return null;
-  }
-
   initFeeType() {
     this.currentRule.fee_type = 1;
   }
@@ -308,11 +306,12 @@ export class UpdateRuleComponent implements OnInit {
 
   updateRule(rule: BackendRule) {
     try {
-      if(!this.isAdd) return;
+      if (!this.isAdd) return;
       this.ruleService
         .updateData(this.id, rule).subscribe(
           res => {
             this.notifier.notify("success", "Successfully Updated!");
+            this.goHome();
           }
         );
     } catch (e) {
@@ -342,7 +341,7 @@ export class UpdateRuleComponent implements OnInit {
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.currentRule.conditions = JSON.stringify(conditions);
     this.currentRule.event = (eventResult);
-
+    // console.log(this.currentRule)
     this.updateRule(this.currentRule);
   }
 
@@ -360,16 +359,21 @@ export class UpdateRuleComponent implements OnInit {
         }
       }
     }
-    else result = {
-      type: data.type,
-      params: {
-        path: data.path,
-        e_value_base: Number(data.e_value_base),
-        e_value_rate: Number(data.e_value_rate),
-        min_value: Number(data.min_value),
-        max_value: Number(data.max_value)
-      }
-    };
+    else {
+      data.e_value_base = data.e_value_base || ''
+      data.min_value = data.min_value || ''
+      data.max_value = data.max_value || ''
+      result = {
+        type: data.type,
+        params: {
+          path: data.path,
+          e_value_base: Number(data.e_value_base.toString().replace(/\D/g, '')),
+          e_value_rate: Number(data.e_value_rate),
+          min_value: Number(data.min_value.toString().replace(/\D/g, '')),
+          max_value: Number(data.max_value.toString().replace(/\D/g, ''))
+        }
+      };
+    }
     for (let item in result.params) {
       if (result.params[item] === null || result.params[item] === 0) {
         delete result.params[item];
@@ -431,5 +435,32 @@ export class UpdateRuleComponent implements OnInit {
       }
     }
     return result;
+  }
+
+  onBlur(key: string) {
+    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+      this.event[key] = this.event[key] || "";
+      this.event[key] = this.currencyPipe.transform(this.event[key].toString().replace(/\D/g, ''), 'VND', '')
+    }
+  }
+
+  onFocus(key: string) {
+    if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
+      this.event[key] = this.event[key] ? this.event[key].toString().replace(/\D/g, '') : '';
+    }
+  }
+
+  formatInput(key: string) {
+    // if (this.isFormat) {
+      this.onBlur(key);
+    //   this.isFormat= false;
+    // }
+    return this.event[key];
+  }
+
+  // go home
+  goHome(): void {
+    let path = '/';
+    this.router.navigateByUrl(path);
   }
 }
