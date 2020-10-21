@@ -35,10 +35,10 @@ export class UpdateRuleComponent implements OnInit {
     [
       { field: 'Event name', name: 'type', type: "text" },
       { field: 'Path', name: 'path', type: "text" },
-      { field: 'Phí cố định', name: 'e_value_base', type: "number" },
-      { field: 'Phí %', name: 'e_value_rate', type: "number" },
-      { field: 'Giá trị lớn nhất', name: 'max_value', type: "number" },
-      { field: 'Giá trị nhỏ nhất', name: 'min_value', type: "number" }
+      { field: 'Fixed value', name: 'e_value_base', type: "number" },
+      { field: 'Percent value (%)', name: 'e_value_rate', type: "number" },
+      { field: 'Max value', name: 'max_value', type: "number" },
+      { field: 'Min value', name: 'min_value', type: "number" }
     ],
     [
       { field: 'Event name', name: 'type', type: "text" },
@@ -49,10 +49,10 @@ export class UpdateRuleComponent implements OnInit {
     [
       { field: 'Event name', name: 'type', type: "text" },
       { field: 'Path', name: 'path', type: "text" },
-      { field: 'Phí cố định', name: 'e_value_base', type: "number" },
-      { field: 'Phí %', name: 'e_value_rate', type: "number" },
-      { field: 'Giá trị lớn nhất', name: 'max_value', type: "number" },
-      { field: 'Giá trị nhỏ nhất', name: 'min_value', type: "number" }
+      { field: 'Fixed value', name: 'e_value_base', type: "number" },
+      { field: 'Percent value (%)', name: 'e_value_rate', type: "number" },
+      { field: 'Max value', name: 'max_value', type: "number" },
+      { field: 'Min value', name: 'min_value', type: "number" }
     ]
   ];
   public isFee: Boolean = false;

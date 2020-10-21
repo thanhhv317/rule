@@ -9,6 +9,7 @@ import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
 import { Helper } from '../utils/helper';
 import { CurrencyPipe } from '@angular/common';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-create',
@@ -69,7 +70,8 @@ export class CreateComponent implements OnInit {
   event: Object;
 
   constructor(private ruleService: RuleService, notifierService: NotifierService,
-    private currencyPipe: CurrencyPipe) {
+    private currencyPipe: CurrencyPipe, 
+    private location: Location,) {
     this.notifier = notifierService;
   }
 
@@ -244,6 +246,7 @@ export class CreateComponent implements OnInit {
   onChange(event: any) { // without type info
     let nam = event.target.name;
     let val = event.target.value;
+    console.log(val)
     if (nam === 'status') {
       this.status = val === "ACTIVE" ? true : false;
     }
@@ -365,5 +368,9 @@ export class CreateComponent implements OnInit {
     if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
       this.event[key] = this.event[key] ? this.event[key].replace(/\D/g, '') : ""
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }
