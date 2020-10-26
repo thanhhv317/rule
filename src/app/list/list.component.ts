@@ -85,7 +85,7 @@ export class ListComponent implements OnInit {
         tmp.filter = this.filterData;
         that.http
           .post<DataTablesResponse>(
-            'http://localhost:3000/rule/list',
+            'http://localhost:4001/rules/',
             tmp, {}
           ).subscribe(resp => {
             that.rules = [...resp.data];
