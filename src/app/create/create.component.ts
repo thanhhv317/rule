@@ -27,30 +27,7 @@ export class CreateComponent implements OnInit {
   private readonly notifier: NotifierService;
 
   public actionType: ActionType[];
-  public listAction = [
-    [
-      { field: 'Event name', name: 'type', type: "text" },
-      { field: 'Path', name: 'path', type: "text" },
-      { field: 'Fixed value', name: 'e_value_base', type: "number" },
-      { field: 'Percent value (%)', name: 'e_value_rate', type: "number" },
-      { field: 'Max value', name: 'max_value', type: "number" },
-      { field: 'Min value', name: 'min_value', type: "number" }
-    ],
-    [
-      { field: 'Event name', name: 'type', type: "text" },
-      { field: 'Connector name', name: 'connector_name', type: "text" },
-      { field: 'Limit', name: 'limit', type: "number" }
-    ],
-    [],
-    [
-      { field: 'Event name', name: 'type', type: "text" },
-      { field: 'Path', name: 'path', type: "text" },
-      { field: 'Fixed value', name: 'e_value_base', type: "number" },
-      { field: 'Percent value (%)', name: 'e_value_rate', type: "number" },
-      { field: 'Max value', name: 'max_value', type: "number" },
-      { field: 'Min value', name: 'min_value', type: "number" }
-    ]
-  ];
+  public listAction = (new Helper).listAction;
   public isFee: Boolean = false;
   public fee_type = [
     { value: 1, field: 'Service Fees' },
@@ -90,13 +67,7 @@ export class CreateComponent implements OnInit {
   public operator: any;
 
   // value of condition
-  public valueOfCondition = [
-    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng', 'Chuyển tiền về từ ngân hàng'],
-    ['Topup', 'HĐ Điện', 'HĐ Nước', 'Mua mã thẻ(dt, game, data)'],
-    ['Viettel', 'Vinaphone', 'Mobifone'],
-    ['Ví ECO', 'COD', 'NH liên kết', 'NH hỗ trợ', 'eFund'],
-    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyển tiền IBFP']
-  ]
+  public valueOfCondition = (new Helper).conditionName;
 
   ngOnInit(): void {
 
@@ -107,12 +78,7 @@ export class CreateComponent implements OnInit {
     this.connectorTemplate = this.generateTemplate(this.valueOfCondition[4]);
 
     // init operator;
-    this.operator = [
-      { value: 'equal', key: 'Equal' },
-      { value: 'notequal', key: 'Not Equal' },
-      { value: 'in', key: 'In' },
-      { value: 'notin', key: 'Not In' }
-    ];
+    this.operator = (new Helper).operator;
 
     this.filter = [
       { field: 'TransactionType', label: 'Transaction type', operators: this.operator, type: 'string', template: this.transactionTypeTemplate },
@@ -361,12 +327,6 @@ export class CreateComponent implements OnInit {
       this.event[key] = this.event[key] || "";
       this.event[key] = this.currencyPipe.transform(this.event[key].replace(/\D/g, ''), 'VND', '')
     }
-  }
-
-  onFocus(key: string) {
-    // if (key === 'e_value_base' || key === 'max_value' || key === 'min_value') {
-    //   this.event[key] = this.event[key] ? this.event[key].replace(/\D/g, '') : ""
-    // }
   }
 
   goBack() {
