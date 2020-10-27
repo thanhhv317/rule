@@ -105,7 +105,7 @@
                     <td>
                         <div class="">
                             <a routerLink="/update/{{ rule._id }}" class="btn btn-update btn-sm ml-2 mr-1">Update</a>
-                            <button type="button" class="btn btn-delete btn-sm" (click)="onDelete($event, rule._id)">
+                            <button type="button" class="btn btn-delete btn-sm" (click)="onDelete($event, rule._id)" [disabled]="!rule.active">
                                 Delete
                             </button>
                         </div>

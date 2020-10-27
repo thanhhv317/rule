@@ -8,7 +8,6 @@ import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-b
 import { Status } from '../interfaces/status';
 import {Router} from '@angular/router';
 
-
 class DataTablesResponse {
   data: any[];
   draw: number;
@@ -53,8 +52,6 @@ export class ListComponent implements OnInit {
     private router: Router
   ) {
     this.notifier = notifierService;
-    // this.fromDate = calendar.getToday();
-    // this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
   }
 
   ngOnInit(): void {
@@ -68,8 +65,6 @@ export class ListComponent implements OnInit {
     this.statusSeleted = "ALL";
   }
 
-
-
   getData(): void {
     this.tData = true;
     const that = this;
@@ -82,6 +77,7 @@ export class ListComponent implements OnInit {
       lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
       ajax: (dataTablesParameters: any, callback) => {
         let tmp = { ...dataTablesParameters };
+        tmp.action = 'get_list';
         tmp.filter = this.filterData;
         that.http
           .post<DataTablesResponse>(
@@ -160,7 +156,6 @@ export class ListComponent implements OnInit {
   }
 
   // datepicker
-
   onDateSelection(date: NgbDate) {
     if (!this.fromDate && !this.toDate) {
       this.fromDate = date;
@@ -194,5 +189,4 @@ export class ListComponent implements OnInit {
     let path = '/detail/' + id;
     this.router.navigateByUrl(path);
   }
-
 }

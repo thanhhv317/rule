@@ -18,9 +18,7 @@ import { CurrencyPipe } from '@angular/common';
 })
 
 export class ViewRuleComponent implements OnInit {
-
   helper = new Helper();
-
   public data: Object[];
   public importRules: RuleModel;
   public id: string;
@@ -29,10 +27,7 @@ export class ViewRuleComponent implements OnInit {
   public action = [
     'type', 'key', 'value'
   ];
-
-
   public translateAtion: any;
-
   public showButtons: Object = { groupInsert: false, groupDelete: false, ruleDelete: false }
 
   constructor(
@@ -57,14 +52,7 @@ export class ViewRuleComponent implements OnInit {
   public operator: any;
 
   // value of condition
-  public valueOfCondition = [
-    ['Nạp tiền điện thoại', 'Trả sau', 'Thanh toán hóa đơn', 'Mua mã thẻ', 'Nạp tiền từ ngân hàng', 'Rút tiền về ngân hàng', 'Chuyển tiền về từ ngân hàng'],
-    ['Topup', 'HĐ Điện', 'HĐ Nước', 'Mua mã thẻ(dt, game, data)'],
-    ['Viettel', 'Vinaphone', 'Mobifone'],
-    ['Ví ECO', 'COD', 'NH liên kết', 'NH hỗ trợ', 'eFund'],
-    ['NH liên kết BIDV', 'NH liên kết Sacombank', 'NH hỗ trợ Napas', 'Chuyển tiền IBFP']
-  ]
-
+  public valueOfCondition = (new Helper).conditionName;
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -76,12 +64,7 @@ export class ViewRuleComponent implements OnInit {
     this.connectorTemplate = this.generateTemplate(this.valueOfCondition[4]);
 
     // init operator;
-    this.operator = [
-      { value: 'equal', key: 'Equal' },
-      { value: 'notequal', key: 'Not Equal' },
-      { value: 'in', key: 'In' },
-      { value: 'notin', key: 'Not In' }
-    ];
+    this.operator = (new Helper).operator;
 
     this.filter = [
       { field: 'TransactionType', label: 'Transaction type', operators: this.operator, type: 'string', template: this.transactionTypeTemplate },
@@ -105,11 +88,13 @@ export class ViewRuleComponent implements OnInit {
   }
 
   getRule(): void {
-    this.ruleService.getRule(this.id).subscribe((data: any) => {
+    let obj = {
+      ruleID: this.id
+    };
+    this.ruleService.getRule(obj).subscribe((data: any) => {
       this.currentRule = data;
       this.tData = true;
       this.action['type'] = JSON.parse(this.currentRule.event).type;
-
       this.action['key'] = [];
       this.action['value'] = [];
       let tmp = JSON.parse(this.currentRule.event).params;
@@ -120,16 +105,12 @@ export class ViewRuleComponent implements OnInit {
         this.action['key'][i] = item;
         i++;
       }
-
       let condition = (this.reparseConditions(JSON.parse(this.currentRule.conditions)));
-
       setTimeout(() => {
         this.importRules = (condition);
         this.qryBldrObj.setRules(this.importRules);
-
       }, 100)
     })
-
   }
 
   generateTemplate(ds: string[]) {

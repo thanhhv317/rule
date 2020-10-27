@@ -178,7 +178,10 @@ export class UpdateRuleComponent implements OnInit {
   }
 
   getRule(): void {
-    this.ruleService.getRule(this.id).subscribe((data: any) => {
+    let obj = {
+      ruleID: this.id
+    }
+    this.ruleService.getRule(obj).subscribe((data: any) => {
       this.currentRule = data;
       this.tData = true;
       this.actionTypeSelected = this.currentRule.type;
