@@ -1,15 +1,15 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Rule } from './interfaces/rule';
-import { BackendRule } from './interfaces/backendRule';
 import { Observable, of, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { BackendRule } from '../interfaces/backendRule';
+import { Rule } from '../interfaces/rule';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RuleService {
-  private REST_API_SERVER = "http://localhost:4001";
+  // private REST_API_SERVER = "http://localhost:4001";
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -22,7 +22,7 @@ export class RuleService {
       action: 'create',
       createRuleDTO: backendRule
     }
-    return this.httpClient.post<BackendRule>(this.REST_API_SERVER + '/rules', body, this.httpOptions).pipe(catchError(this.handleError));
+    return this.httpClient.post<BackendRule>('/rules', body, this.httpOptions).pipe(catchError(this.handleError));
   }
 
   public updateData(ruleId: string, rule: any): Observable<any> {
@@ -31,12 +31,12 @@ export class RuleService {
       ruleID: ruleId,
       createRuleDTO: rule
     }
-    return this.httpClient.post(this.REST_API_SERVER + '/rules', body, this.httpOptions);
+    return this.httpClient.post('/rules', body, this.httpOptions);
   }
 
   public getRule(ruleId: any): Observable<Rule> {
     ruleId.action = 'get_rule';
-    return this.httpClient.post<Rule>(this.REST_API_SERVER + '/rules', ruleId, this.httpOptions);
+    return this.httpClient.post<Rule>('/rules', ruleId, this.httpOptions);
   }
 
   public deleteRule(ruleID: string): Observable<any> {
@@ -44,7 +44,7 @@ export class RuleService {
       action: 'delete',
       ruleID
     }
-    return this.httpClient.post<Rule>(this.REST_API_SERVER + '/rules', obj, this.httpOptions);
+    return this.httpClient.post<Rule>('/rules', obj, this.httpOptions);
   }
 
   handleError(error: HttpErrorResponse) {

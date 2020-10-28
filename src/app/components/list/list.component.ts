@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BackendRule } from '../interfaces/backendRule';
 import * as moment from 'moment';
-import { RuleService } from '../rule.service';
 import { NotifierService } from "angular-notifier";
 import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { Status } from '../interfaces/status';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
+import { Status } from 'src/app/interfaces/status';
+import { BackendRule } from 'src/app/interfaces/backendRule';
+import { RuleService } from 'src/app/services/rule.service';
 
 class DataTablesResponse {
   data: any[];
@@ -81,7 +81,7 @@ export class ListComponent implements OnInit {
         tmp.filter = this.filterData;
         that.http
           .post<DataTablesResponse>(
-            'http://localhost:4001/rules/',
+            '/rules',
             tmp, {}
           ).subscribe(resp => {
             that.rules = [...resp.data];

@@ -1,14 +1,14 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { RuleModel, QueryBuilderComponent, ColumnsModel, TemplateColumn } from '@syncfusion/ej2-angular-querybuilder';
-import { RuleService } from '../rule.service';
-import { BackendRule } from '../interfaces/backendRule';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
-import { Helper } from '../utils/helper';
 import { CurrencyPipe } from '@angular/common';
+import { Helper } from 'src/app/utils/helper';
+import { BackendRule } from 'src/app/interfaces/backendRule';
+import { RuleService } from 'src/app/services/rule.service';
 
 
 @Component({

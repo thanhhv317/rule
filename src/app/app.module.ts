@@ -8,22 +8,23 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ListComponent } from './list/list.component';
-import { UpdateRuleComponent } from './update-rule/update-rule.component';
+import { ListComponent } from './components/list/list.component';
+import { UpdateRuleComponent } from './components/update-rule/update-rule.component';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
-import { ViewRuleComponent } from './view-rule/view-rule.component';
+import { ViewRuleComponent } from './components/view-rule/view-rule.component';
 
 import { FormsModule } from '@angular/forms';
 
 // ng bootstrap
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CreateComponent } from './create/create.component';
+import { CreateComponent } from './components/create/create.component';
 
 // import the DateTimePickerModule for the DateTimePicker component
 import { DateTimePickerModule } from "@syncfusion/ej2-angular-calendars";
 import { CurrencyPipe } from '@angular/common';
+import { LoginComponent } from './components/login/login.component';
 
-
+import { CookieService } from 'ngx-cookie-service';
 
 
 /**
@@ -76,9 +77,9 @@ const customNotifierOptions: NotifierOptions = {
     NotifierModule.withConfig(customNotifierOptions),
     NgbModule, FormsModule, DateTimePickerModule,
   ], // Declaration of QueryBuilder module into NgModule.
-  declarations: [AppComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent, CreateComponent],
+  declarations: [AppComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent, CreateComponent, LoginComponent],
   bootstrap: [AppComponent],
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, CookieService],
 
 })
 export class AppModule { }
