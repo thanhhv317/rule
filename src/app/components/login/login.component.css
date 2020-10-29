@@ -28,7 +28,7 @@ button:hover {
 }
 
 img.avatar {
-    width: 20%;
+    width: 40%;
     border-radius: 50%;
 }
 
@@ -41,6 +41,15 @@ img.avatar {
         float: none;
     }
     .cancelbtn {
+        width: 100%;
+    }
+}
+
+
+/* On screens that are 600px wide or less, the background color is olive */
+
+@media screen and (max-width: 600px) {
+    img.avatar {
         width: 100%;
     }
 }

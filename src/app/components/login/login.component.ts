@@ -12,24 +12,24 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   user: UserLogin;
+  private readonly _notifier: NotifierService;
 
-  private readonly notifier: NotifierService;
   constructor(
-    private authenticationService: AuthenticationService,
+    private _authenticationService: AuthenticationService,
     private _cookieService: CookieService,
     notifierService: NotifierService,
-    private router: Router,
+    private _router: Router,
   ) {
-    this.notifier = notifierService;
+    this._notifier = notifierService;
     if (this._cookieService.get('userToken')) {
-      this.router.navigateByUrl('/');
+      this._router.navigateByUrl('/');
     }
   }
 
   ngOnInit(): void {
     this.user = {
-      username: '',
-      password: ''
+      username: null,
+      password: null
     }
   }
 
@@ -40,23 +40,25 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.authenticationService.login(this.user).subscribe(
+    if (!this.user.username || !this.user.password) {
+      this._notifier.notify('error', 'Username and Password is required');
+      return;
+    }
+    this._authenticationService.login(this.user).subscribe(
       (res) => {
         this._cookieService.set('userToken', res.access_token);
         this._cookieService.set('username', res.username);
         this._cookieService.set('userLevel', res.level);
-        this.notifier.notify("success", "Logged in successfully");
+        this._notifier.notify("success", "Logged in successfully");
         // send data
         let data = {
           isLogin: true,
           username: res.username,
           level: res.level
         }
-        this.authenticationService.emitChange(data);
+        this._authenticationService.emitChange(data);
       }, (err) => {
-        this.notifier.notify("error", err.error.message);
+        this._notifier.notify("error", err.error.message);
       })
   }
-
-
 }

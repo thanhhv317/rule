@@ -10,10 +10,9 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root'
 })
 export class RuleService {
-  // private REST_API_SERVER = "http://localhost:4001";
 
   constructor(
-    private httpClient: HttpClient,
+    private _httpClient: HttpClient,
     private _cookieService: CookieService
   ) { 
   }
@@ -31,7 +30,7 @@ export class RuleService {
       action: 'create',
       createRuleDTO: backendRule
     }
-    return this.httpClient.post<BackendRule>('/rules', body, this.httpOptions).pipe(catchError(this.handleError));
+    return this._httpClient.post<BackendRule>('/rules', body, this.httpOptions).pipe(catchError(this.handleError));
   }
 
   public updateData(ruleId: string, rule: any): Observable<any> {
@@ -40,12 +39,12 @@ export class RuleService {
       ruleID: ruleId,
       createRuleDTO: rule
     }
-    return this.httpClient.post('/rules', body, this.httpOptions);
+    return this._httpClient.post('/rules', body, this.httpOptions);
   }
 
   public getRule(ruleId: any): Observable<Rule> {
     ruleId.action = 'get_rule';
-    return this.httpClient.post<Rule>('/rules', ruleId, this.httpOptions);
+    return this._httpClient.post<Rule>('/rules', ruleId, this.httpOptions);
   }
 
   public deleteRule(ruleID: string): Observable<any> {
@@ -53,7 +52,7 @@ export class RuleService {
       action: 'delete',
       ruleID
     }
-    return this.httpClient.post<Rule>('/rules', obj, this.httpOptions);
+    return this._httpClient.post<Rule>('/rules', obj, this.httpOptions);
   }
 
   handleError(error: HttpErrorResponse) {

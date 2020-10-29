@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login/login.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { UpdateRuleComponent } from './components/update-rule/update-rule.component';
 import { ViewRuleComponent } from './components/view-rule/view-rule.component';
+
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'create', component: CreateComponent },

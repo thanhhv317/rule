@@ -18,12 +18,13 @@ export class AuthenticationService {
   };
 
   constructor(
-    private httpClient: HttpClient,
-    private router: Router,
+    private _httpClient: HttpClient,
+    private _router: Router,
     notifierService: NotifierService,
     private _cookieService: CookieService
   ) {
-    this.notifier = notifierService; }
+    this.notifier = notifierService;
+  }
 
   changeEmitted$ = this.emitChangeSource.asObservable();
 
@@ -31,22 +32,22 @@ export class AuthenticationService {
     this.emitChangeSource.next(data);
   }
 
-  public handleUserRoute(){
+  public handleUserRoute() {
     if (this._cookieService.get('userLevel') === '2') {
-      this.router.navigateByUrl('/');
-      this.notifier.notify('error', 'You does not permission');
+      this._router.navigateByUrl('/');
+      this.notifier.notify('error', 'You have not permission');
     }
-    return 
+    return
   }
 
   public handleLoginSessionExpires() {
     this._cookieService.deleteAll();
     this.notifier.notify('error', 'Login Session Expires!');
-    this.router.navigateByUrl('/login');
+    this._router.navigateByUrl('/login');
   }
 
   public login(userLogin: UserLogin): Observable<any> {
-    return this.httpClient.post('/auth/login', userLogin, this.httpOptions);
+    return this._httpClient.post('/auth/login', userLogin, this.httpOptions);
   }
 
 }

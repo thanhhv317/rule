@@ -14,19 +14,19 @@ export class AppComponent {
   username: String;
 
   constructor(
-    private authenticationService: AuthenticationService,
-    private router: Router,
+    private _authenticationService: AuthenticationService,
+    private _router: Router,
     private _cookieService: CookieService
   ) {
     this.isLogin = (this._cookieService.get('userToken')) ? true : false;
     this.username = this._cookieService.get('username') || '';
     this.level = (this._cookieService.get('userLevel') && this._cookieService.get('userLevel') === '1') ? true: false; 
-    authenticationService.changeEmitted$.subscribe(
+    _authenticationService.changeEmitted$.subscribe(
       res => {
         this.isLogin = res.isLogin;
         this.username = res.username;
         this.level = res.level.toString() === '1' ? true: false;
-        this.router.navigateByUrl('/');
+        this._router.navigateByUrl('/');
       }
     )
     this.checkLogin()
@@ -35,7 +35,7 @@ export class AppComponent {
   checkLogin() {
     if (!this.isLogin) {
       let path = '/login';
-      this.router.navigateByUrl(path);
+      this._router.navigateByUrl(path);
     }
   }
 
