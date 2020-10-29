@@ -17,3 +17,7 @@
 ::ng-deep div#DataTables_Table_0_length>label {
     margin-top: 0.25rem !important;
 }
+
+a.dropdown-item {
+    cursor: pointer;
+}

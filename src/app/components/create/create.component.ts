@@ -10,6 +10,7 @@ import { Helper } from '../../utils/helper';
 import { CurrencyPipe } from '@angular/common';
 import { Location } from '@angular/common';
 import { RuleService } from 'src/app/services/rule.service';
+import { AuthenticationService } from 'src/app/services';
 
 @Component({
   selector: 'app-create',
@@ -46,9 +47,13 @@ export class CreateComponent implements OnInit {
 
   event: Object;
 
-  constructor(private ruleService: RuleService, notifierService: NotifierService,
-    private currencyPipe: CurrencyPipe, 
-    private location: Location,) {
+  constructor(
+    private ruleService: RuleService,
+    notifierService: NotifierService,
+    private currencyPipe: CurrencyPipe,
+    private location: Location,
+    private authenticationService: AuthenticationService
+  ) {
     this.notifier = notifierService;
   }
 
@@ -70,6 +75,8 @@ export class CreateComponent implements OnInit {
   public valueOfCondition = (new Helper).conditionName;
 
   ngOnInit(): void {
+
+    this.authenticationService.handleUserRoute();
 
     this.transactionTypeTemplate = this.generateTemplate(this.valueOfCondition[0]);
     this.serviceCodeTemplate = this.generateTemplate(this.valueOfCondition[1]);
@@ -315,11 +322,15 @@ export class CreateComponent implements OnInit {
 
   addData() {
     if (!this.isAdd) return;
-    this.ruleService.addData(this.backendRule).subscribe((res) => {
-      this.notifier.notify("success", 'Created Successfully');
-      this.backendRule.name = '';
-      this.backendRule.priority = null;
-    })
+    this.ruleService.addData(this.backendRule).subscribe(
+      (res) => {
+        this.notifier.notify("success", 'Created Successfully');
+        this.backendRule.name = '';
+        this.backendRule.priority = null;
+      },
+      err => {
+        this.authenticationService.handleLoginSessionExpires();
+      })
   }
 
   onBlur(key: string) {

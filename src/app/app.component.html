@@ -13,16 +13,26 @@
                     <li class="nav-item">
                         <a class="nav-link" routerLink="/list">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" *ngIf="level">
                         <a class="nav-link" routerLink="/create">Create</a>
                     </li>
                 </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          {{username}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" (click)="logout()">Logout</a>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </nav>
     <br>
-    <notifier-container></notifier-container>
 </div>
 <router-outlet></router-outlet>
+<notifier-container></notifier-container>
 
-<div class="footer" style=" height: 50px !important "></div>
+<div *ngIf="isLogin" class="footer" style=" height: 50px !important "></div>

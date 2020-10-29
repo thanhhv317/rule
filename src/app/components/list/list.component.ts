@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as moment from 'moment';
 import { NotifierService } from "angular-notifier";
 import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { Status } from 'src/app/interfaces/status';
 import { BackendRule } from 'src/app/interfaces/backendRule';
 import { RuleService } from 'src/app/services/rule.service';
+import { CookieService } from 'ngx-cookie-service';
+import { AuthenticationService } from 'src/app/services';
 
 class DataTablesResponse {
   data: any[];
@@ -34,6 +36,8 @@ export class ListComponent implements OnInit {
   status: Status[];
   statusSeleted: string;
 
+  level: Boolean;
+
   public filterData = {
     name: '',
     type: '',
@@ -49,12 +53,24 @@ export class ListComponent implements OnInit {
     notifierService: NotifierService,
     private calendar: NgbCalendar,
     public formatter: NgbDateParserFormatter,
-    private router: Router
+    private router: Router,
+    private _cookieService: CookieService,
+    private authenticationService: AuthenticationService
   ) {
     this.notifier = notifierService;
   }
 
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + this._cookieService.get('userToken')
+    })
+  };
+
   ngOnInit(): void {
+
+    this.level = this._cookieService.get('userLevel') === '1' ? true : false;
+
     this.status = [
       { name: "All", value: "ALL" },
       { name: "Active", value: "true" },
@@ -82,19 +98,24 @@ export class ListComponent implements OnInit {
         that.http
           .post<DataTablesResponse>(
             '/rules',
-            tmp, {}
-          ).subscribe(resp => {
-            that.rules = [...resp.data];
-            for (let i = 0; i < that.rules.length; ++i) {
-              that.rules[i].from_date = Number(moment(that.rules[i].from_date))
-              that.rules[i].to_date = Number(moment(that.rules[i].to_date))
+            tmp, this.httpOptions
+          ).subscribe(
+            resp => {
+              that.rules = [...resp.data];
+              for (let i = 0; i < that.rules.length; ++i) {
+                that.rules[i].from_date = Number(moment(that.rules[i].from_date))
+                that.rules[i].to_date = Number(moment(that.rules[i].to_date))
+              }
+              callback({
+                recordsTotal: resp.recordsTotal,
+                recordsFiltered: resp.recordsFiltered,
+                data: []
+              });
+            },
+            (err) => {
+              this.authenticationService.handleLoginSessionExpires();
             }
-            callback({
-              recordsTotal: resp.recordsTotal,
-              recordsFiltered: resp.recordsFiltered,
-              data: []
-            });
-          });
+          );
       },
       columns: [
         { data: 'type' },

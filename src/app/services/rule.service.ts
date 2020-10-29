@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { BackendRule } from '../interfaces/backendRule';
 import { Rule } from '../interfaces/rule';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +12,19 @@ import { Rule } from '../interfaces/rule';
 export class RuleService {
   // private REST_API_SERVER = "http://localhost:4001";
 
+  constructor(
+    private httpClient: HttpClient,
+    private _cookieService: CookieService
+  ) { 
+  }
+
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    headers: new HttpHeaders({ 
+      'Content-Type': 'application/json', 
+      'Authorization': 'Bearer ' + this._cookieService.get('userToken')
+    })
   };
 
-  constructor(private httpClient: HttpClient) { }
 
   public addData(backendRule: BackendRule): Observable<BackendRule> {
     let body = {
@@ -56,7 +65,6 @@ export class RuleService {
       // Server-side errors
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    window.alert(errorMessage);
     return throwError(errorMessage);
   }
 }

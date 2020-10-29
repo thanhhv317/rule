@@ -9,6 +9,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Helper } from 'src/app/utils/helper';
 import { BackendRule } from 'src/app/interfaces/backendRule';
 import { RuleService } from 'src/app/services/rule.service';
+import { AuthenticationService } from 'src/app/services';
 
 
 @Component({
@@ -34,7 +35,8 @@ export class ViewRuleComponent implements OnInit {
     private ruleService: RuleService,
     private route: ActivatedRoute,
     private location: Location,
-    private currencyPipe:CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private authenticationService: AuthenticationService
   ) { }
 
   @ViewChild('querybuilder')
@@ -91,26 +93,31 @@ export class ViewRuleComponent implements OnInit {
     let obj = {
       ruleID: this.id
     };
-    this.ruleService.getRule(obj).subscribe((data: any) => {
-      this.currentRule = data;
-      this.tData = true;
-      this.action['type'] = JSON.parse(this.currentRule.event).type;
-      this.action['key'] = [];
-      this.action['value'] = [];
-      let tmp = JSON.parse(this.currentRule.event).params;
-      this.action['value'] = tmp;
+    this.ruleService.getRule(obj).subscribe(
+      (data: any) => {
+        this.currentRule = data;
+        this.tData = true;
+        this.action['type'] = JSON.parse(this.currentRule.event).type;
+        this.action['key'] = [];
+        this.action['value'] = [];
+        let tmp = JSON.parse(this.currentRule.event).params;
+        this.action['value'] = tmp;
 
-      let i = 0;
-      for (let item in tmp) {
-        this.action['key'][i] = item;
-        i++;
+        let i = 0;
+        for (let item in tmp) {
+          this.action['key'][i] = item;
+          i++;
+        }
+        let condition = (this.reparseConditions(JSON.parse(this.currentRule.conditions)));
+        setTimeout(() => {
+          this.importRules = (condition);
+          this.qryBldrObj.setRules(this.importRules);
+        }, 100)
+      },
+      err => {
+        this.authenticationService.handleLoginSessionExpires();
       }
-      let condition = (this.reparseConditions(JSON.parse(this.currentRule.conditions)));
-      setTimeout(() => {
-        this.importRules = (condition);
-        this.qryBldrObj.setRules(this.importRules);
-      }, 100)
-    })
+    )
   }
 
   generateTemplate(ds: string[]) {
@@ -206,7 +213,7 @@ export class ViewRuleComponent implements OnInit {
   }
 
   formatPrice(price: any) {
-    if (Number(price) > 999) return (this.currencyPipe.transform(price, 'VND', '' ));
+    if (Number(price) > 999) return (this.currencyPipe.transform(price, 'VND', ''));
     return price;
   }
 

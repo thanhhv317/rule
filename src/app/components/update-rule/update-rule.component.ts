@@ -13,6 +13,7 @@ import { CurrencyPipe } from '@angular/common';
 import {Router} from '@angular/router';
 import { BackendRule } from 'src/app/interfaces/backendRule';
 import { RuleService } from 'src/app/services/rule.service';
+import { AuthenticationService } from 'src/app/services';
 
 
 @Component({
@@ -57,7 +58,8 @@ export class UpdateRuleComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private currencyPipe: CurrencyPipe,
-    private router: Router
+    private router: Router,
+    private authenticationService: AuthenticationService
   ) {
     this.notifier = notifierService;
   }
@@ -80,6 +82,9 @@ export class UpdateRuleComponent implements OnInit {
   public valueOfCondition = (new Helper).conditionName;
 
   ngOnInit(): void {
+
+    this.authenticationService.handleUserRoute();
+
     this.data = hardwareData;
     this.id = this.route.snapshot.paramMap.get('id');
     this.transactionTypeTemplate = this.generateTemplate(this.valueOfCondition[0]);
@@ -281,6 +286,9 @@ export class UpdateRuleComponent implements OnInit {
           res => {
             this.notifier.notify("success", "Successfully Updated!");
             this.goHome();
+          },
+          err => {
+            this.authenticationService.handleLoginSessionExpires();
           }
         );
     } catch (e) {
@@ -310,7 +318,6 @@ export class UpdateRuleComponent implements OnInit {
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.currentRule.conditions = JSON.stringify(conditions);
     this.currentRule.event = (eventResult);
-    // console.log(this.currentRule)
     this.updateRule(this.currentRule);
   }
 
