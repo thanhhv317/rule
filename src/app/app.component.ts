@@ -41,7 +41,7 @@ export class AppComponent {
 
   logout() {
     this.isLogin = false;
-    this._cookieService.deleteAll();
+    this._cookieService.deleteAll('/');
     this.checkLogin();
   }
 }

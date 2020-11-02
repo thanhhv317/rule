@@ -1,15 +1,23 @@
-<form>
-    <div class="imgcontainer">
-        <img src="../../../assets//images/1.jpg" alt="Avatar" class="avatar">
-    </div>
+<div class="container">
+    <form>
+        <div class="row padding-header">
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="imgcontainer">
+                    <img src="../../../assets//images/1.jpg" alt="Avatar" class="avatar">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="container">
+                    <h2 class="login-title">LOG IN</h2>
+                    <label for="uname"><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="username" (change)="onChange($event)">
 
-    <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="username" (change)="onChange($event)">
+                    <label for="psw"><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="password" (change)="onChange($event)">
 
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" (change)="onChange($event)">
-
-        <button (click)="login()">Login</button>
-    </div>
-</form>
+                    <button (click)="login()">Login</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -28,8 +28,20 @@ button:hover {
 }
 
 img.avatar {
-    width: 40%;
+    width: 100%;
     border-radius: 50%;
+}
+
+.padding-header {
+    padding-top: 15vh;
+    padding-bottom: 10vh;
+}
+
+.login-title {
+    font-size: 1.7rem;
+    text-align: center;
+    color: rgb(9, 191, 247);
+    border-bottom: 1px solid #d7d7de;
 }
 
 
@@ -51,5 +63,8 @@ img.avatar {
 @media screen and (max-width: 600px) {
     img.avatar {
         width: 100%;
+    }
+    .padding-header {
+        padding-top: 10vh;
     }
 }

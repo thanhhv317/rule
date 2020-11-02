@@ -16,6 +16,9 @@
             <li class="nav-item">
                 <a class="nav-link rule_tab" id="actions-tab" data-toggle="tab" href="#actions" role="tab" aria-controls="actions" aria-selected="false">Actions</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link rule_tab" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history" aria-selected="false">History updated</a>
+            </li>
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="information" role="tabpanel" aria-labelledby="information-tab">
@@ -120,6 +123,17 @@
                 </div>
                 <!-- end rule actions -->
             </div>
+
+            <!-- begin history updated  -->
+            <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <!-- begin rule actions -->
+                <br>
+                <div class="form-row">
+                    <app-history style="width: 100%;"></app-history>
+                </div>
+                <!-- end rule actions -->
+            </div>
+            <!-- end history udated  -->
         </div>
 
     </div>

@@ -1,0 +1,31 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Column updated</th>
+            <th scope="col">Value updated</th>
+            <th scope="col">Update persion</th>
+            <th scope="col">Time update</th>
+        </tr>
+    </thead>
+    <tbody *ngIf="historyData.length">
+        <tr *ngFor="let item of historyData">
+            <th scope="row">{{item.num}}</th>
+            <td>{{item.column}}</td>
+            <td>
+                <ul class="list-change" *ngIf="item.column==='rule infomations'">
+                    <li *ngFor="let i of item.data">
+                        {{i.column}}: {{i.old_value}}<span class="from-to"> >> </span>{{i.new_value}}
+                    </li>
+                </ul>
+                <ul class="list-change" *ngIf="item.column==='event'">
+                    <li *ngFor="let i of item.data"> {{hanleEventColumn(i.old_value, i.new_value)}} {{i.column}}: {{i.old_value}}<span class="from-to"> >> </span>{{i.new_value}}
+                    </li>
+                </ul>
+            </td>
+            <td>{{item.update_persion}}</td>
+            <td>{{item.time_update}}</td>
+        </tr>
+
+    </tbody>
+</table>

@@ -46,8 +46,12 @@ export class AuthenticationService {
     this._router.navigateByUrl('/login');
   }
 
+  public SwitchToPageNotFound() {
+    this._router.navigateByUrl('/404');
+  }
+
   public login(userLogin: UserLogin): Observable<any> {
-    return this._httpClient.post('/auth/login', userLogin, this.httpOptions);
+    return this._httpClient.post('/auth', userLogin, this.httpOptions);
   }
 
 }

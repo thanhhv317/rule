@@ -115,6 +115,9 @@ export class ViewRuleComponent implements OnInit {
         }, 100)
       },
       err => {
+        if(err.status === 500) {
+          this.authenticationService.SwitchToPageNotFound();
+        } else
         this.authenticationService.handleLoginSessionExpires();
       }
     )

@@ -10,10 +10,14 @@ import { DropDownList, MultiSelect } from '@syncfusion/ej2-dropdowns';
 import { getComponent, createElement } from '@syncfusion/ej2-base';
 import { Helper } from '../../utils/helper';
 import { CurrencyPipe } from '@angular/common';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { BackendRule } from 'src/app/interfaces/backendRule';
 import { RuleService } from 'src/app/services/rule.service';
 import { AuthenticationService } from 'src/app/services';
+import * as _ from 'lodash';
+import { HistoryUpdate } from 'src/app/interfaces';
+import { CookieService } from 'ngx-cookie-service';
+import { HistoryService } from 'src/app/services';
 
 
 @Component({
@@ -42,6 +46,8 @@ export class UpdateRuleComponent implements OnInit {
 
   public action = [];
 
+  oldRule: any;
+
   r_type: string;
 
   actionSelected: Array<any>;
@@ -59,7 +65,10 @@ export class UpdateRuleComponent implements OnInit {
     private location: Location,
     private currencyPipe: CurrencyPipe,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private _cookieService: CookieService,
+    private _historyService: HistoryService
+
   ) {
     this.notifier = notifierService;
   }
@@ -186,42 +195,51 @@ export class UpdateRuleComponent implements OnInit {
     let obj = {
       ruleID: this.id
     }
-    this.ruleService.getRule(obj).subscribe((data: any) => {
-      this.currentRule = data;
-      this.tData = true;
-      this.actionTypeSelected = this.currentRule.type;
-      let action = this.actionType.find((x) => x.name === this.actionTypeSelected)
-      this.actionSelected = this.listAction[Number(action.id)];
-      this.r_type = data.type;
-      if (data.type === 'route') {
-        this.initEventWithTypeRoute();
+    this.ruleService.getRule(obj).subscribe(
+      (data: any) => {
+        this.oldRule = { ...data };
+        this.currentRule = data;
+        this.tData = true;
+        this.actionTypeSelected = this.currentRule.type;
+        let action = this.actionType.find((x) => x.name === this.actionTypeSelected)
+        this.actionSelected = this.listAction[Number(action.id)];
+        this.r_type = data.type;
+        if (data.type === 'route') {
+          this.initEventWithTypeRoute();
+        }
+        else {
+          this.initEvent();
+        }
+        let condition = this.currentRule.conditions;
+        setTimeout(() => {
+          this.importRules = this.reparseConditions(JSON.parse(condition));
+          // this.qryBldrObj.setRules(this.importRules);
+        }, 100)
+
+        this.feeTypeSelected = this.currentRule.fee_type;
+
+        if (this.currentRule.type === "fee") {
+          this.isFee = true;
+        }
+
+        let x = JSON.parse(this.currentRule.event).type;
+
+        if (x) {
+          this.action['value'] = [];
+          let tmp = JSON.parse(this.currentRule.event).params;
+          this.action['value'] = tmp;
+          this.action['value'].type = x;
+        }
+
+        this.swapFeeType();
+      },
+      err => {
+        if (err.status === 500) {
+          this.authenticationService.SwitchToPageNotFound();
+        } else
+          this.authenticationService.handleLoginSessionExpires();
       }
-      else {
-        this.initEvent();
-      }
-      let condition = this.currentRule.conditions;
-      setTimeout(() => {
-        this.importRules = this.reparseConditions(JSON.parse(condition));
-        // this.qryBldrObj.setRules(this.importRules);
-      }, 100)
-
-      this.feeTypeSelected = this.currentRule.fee_type;
-
-      if (this.currentRule.type === "fee") {
-        this.isFee = true;
-      }
-
-      let x = JSON.parse(this.currentRule.event).type;
-
-      if (x) {
-        this.action['value'] = [];
-        let tmp = JSON.parse(this.currentRule.event).params;
-        this.action['value'] = tmp;
-        this.action['value'].type = x;
-      }
-
-      this.swapFeeType();
-    })
+    )
   }
 
   swapFeeType() {
@@ -318,11 +336,84 @@ export class UpdateRuleComponent implements OnInit {
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.currentRule.conditions = JSON.stringify(conditions);
     this.currentRule.event = (eventResult);
+    this.historyUpdate();
     this.updateRule(this.currentRule);
+
+
   }
 
+
+
+  historyUpdate() {
+
+    if (_.isEqual(this.oldRule, this.currentRule)) {
+      return;
+    }
+    let that = this;
+    let data = [];
+
+    let columnChange = _.reduce(this.oldRule, function (result, value, key) {
+      return _.isEqual(value, that.currentRule[key]) ?
+        result : result.concat(key);
+    }, []);
+
+    let ruleInfomation = [];
+    columnChange.map((item) => {
+      if (item === "conditions" || item === "event") {
+        let tmp: HistoryUpdate = {
+          column: item,
+          rule_id: this.id,
+          update_persion: this._cookieService.get('username'),
+          data: JSON.stringify([
+            {
+              old_value: this.oldRule[item],
+              new_value: this.currentRule[item]
+            }
+          ])
+        };
+        data.push(tmp);
+      } else {
+        let tmp = {
+          column: item,
+          old_value: this.oldRule[item],
+          new_value: this.currentRule[item]
+        };
+        ruleInfomation.push(tmp);
+      }
+
+    })
+
+    if (!_.isEmpty(ruleInfomation)) {
+      data.push({
+        column: 'rule infomations',
+        rule_id: this.id,
+        update_persion: this._cookieService.get('username'),
+        data: JSON.stringify(ruleInfomation)
+      })
+    }
+
+    console.log(data)
+
+    data.map((x) => {
+      this._historyService.addData(x).subscribe(
+        (data) => {
+          console.log(data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      )
+    })
+  }
+
+
+
+
+
+
+
   convertEvent(data: any): any {
-    let result;
+    let result: any;
     if (data.type === '') return JSON.stringify({
       type: ""
     })
@@ -428,7 +519,7 @@ export class UpdateRuleComponent implements OnInit {
 
   formatInput(key: string) {
     // if (this.isFormat) {
-      this.onBlur(key);
+    this.onBlur(key);
     //   this.isFormat= false;
     // }
     return this.event[key];

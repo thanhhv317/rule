@@ -26,6 +26,7 @@ import { LoginComponent } from './components/login/login.component';
 
 import { CookieService } from 'ngx-cookie-service';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { HistoryComponent } from './components/history/history.component';
 
 
 /**
@@ -78,7 +79,7 @@ const customNotifierOptions: NotifierOptions = {
     NotifierModule.withConfig(customNotifierOptions),
     NgbModule, FormsModule, DateTimePickerModule,
   ], // Declaration of QueryBuilder module into NgModule.
-  declarations: [AppComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent, CreateComponent, LoginComponent, PageNotFoundComponent],
+  declarations: [AppComponent, ListComponent, UpdateRuleComponent, ViewRuleComponent, CreateComponent, LoginComponent, PageNotFoundComponent, HistoryComponent],
   bootstrap: [AppComponent],
   providers: [CurrencyPipe, CookieService],
 

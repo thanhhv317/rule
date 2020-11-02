@@ -1,0 +1,13 @@
+.list-change {
+    padding-left: 15px;
+}
+
+.from-to {
+    color: #f50909;
+    font-weight: 600;
+}
+
+th {
+    white-space: nowrap;
+    text-transform: capitalize;
+}
