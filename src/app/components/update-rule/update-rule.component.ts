@@ -338,13 +338,7 @@ export class UpdateRuleComponent implements OnInit {
     this.currentRule.event = (eventResult);
     this.historyUpdate();
     this.updateRule(this.currentRule);
-
-
   }
-
-
-  // action has fee_type and type
-
 
   historyUpdate() {
 
@@ -421,20 +415,12 @@ export class UpdateRuleComponent implements OnInit {
     data.map((x) => {
       this._historyService.addData(x).subscribe(
         (data) => {
-          console.log(data);
         },
         (err) => {
-          console.log(err);
         }
       )
     })
   }
-
-
-
-
-
-
 
   convertEvent(data: any): any {
     let result: any;

@@ -10,4 +10,5 @@ export interface BackendRule {
     type: string;
     event: string;
     conditions: string;
+    userCreate?: string;
 }

@@ -250,7 +250,6 @@ export class CreateComponent implements OnInit {
     const conditions = this.parseConditions({ condition: this.qryBldrObj.rule.condition, rules: this.qryBldrObj.rule.rules });
     this.backendRule.conditions = JSON.stringify(conditions);
     this.addData();
-    // console.log(this.backendRule)
   }
 
   convertEvent(data: any): any {

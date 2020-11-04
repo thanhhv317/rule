@@ -57,19 +57,23 @@ export class HistoryComponent implements OnInit {
         }
       },
       err => {
-        console.log(err)
       }
     )
   }
-  
+
+  getHref(num: any) {
+    return "#collapseOne" + num;
+  }
+
   formatDateTime(path: String, data: any) {
-    if (path === 'from_date' || path==='to_date') {
+    if (path === 'from_date' || path === 'to_date') {
       return moment(data).format('DD/MM/YYYY HH:mm:ss');
     }
     else return data;
   }
 
   hanleActionColumn(data: any) {
+    // Locking
     let html = ``;
     if (data.column === 'fee_type') {
       let ftp = (this.getFeeType(data.old_value));
@@ -144,11 +148,99 @@ export class HistoryComponent implements OnInit {
             new: JSON.stringify(new_param, undefined, 3) || '""'
           })
         }
-        
+
       }
 
       result.map((x) => {
         html += `<li>${x.column}: <pre>${x.old}</pre> <span class="from-to"> >> </span> <pre>${x.new}</pre></li>`;
+      })
+    }
+
+    return html;
+  }
+
+  hanleActionColumnV2(data: any) {
+    let html = ``;
+    if (data.column === 'fee_type') {
+      let ftp = (this.getFeeType(data.old_value));
+      let ftp2 = (this.getFeeType(data.new_value));
+      html += `<li>Fee type: ${ftp} <span class="from-to"> >> </span> ${ftp2}</li>`;
+    }
+    if (data.column === 'type') {
+      html += `<li>Type: ${data.old_value} <span class="from-to"> >> </span> ${data.new_value}</li>`;
+    }
+    if (data.column === 'event') {
+      let d = JSON.parse(data.old_value);
+      let d2 = JSON.parse(data.new_value);
+      let result = [];
+      if (d.type !== d2.type) {
+        let tmp: ActionChange = {
+          column: 'Action name',
+          old: d.type || '""',
+          new: d2.type || '""'
+        };
+        html += `<li>${tmp.column}: ${tmp.old} <span class="from-to"> >> </span> ${tmp.new}</li>`;
+      }
+
+      if (!_.isEqual(d.params, d2.params)) {
+        if (d.params === undefined || d2.params === undefined) {
+          let tmp: ActionChange = {
+            column: 'Action params',
+            old: JSON.stringify(d.params, undefined, 3) || '""',
+            new: JSON.stringify(d2.params, undefined, 3) || '""'
+          };
+          result.push(tmp);
+        } else {
+          let o = [];
+          let n = [];
+          for (let [key, value] of Object.entries(d.params)) {
+            o.push({ key, value });
+          }
+          for (let [key, value] of Object.entries(d2.params)) {
+            n.push({ key, value });
+          }
+          let o2 = [...o];
+          let n2 = [...n];
+
+          for (let i = 0; i < o.length; ++i) {
+            for (let j = 0; j < n.length; ++j) {
+              if (_.isEqual(o[i], n[i])) {
+                let index = o2.indexOf(o[i]);
+                if (index > -1) {
+                  o2.splice(index, 1);
+                }
+
+                let index2 = n2.indexOf(n[i]);
+                if (index > -1) {
+                  n2.splice(index2, 1);
+                }
+
+              }
+            }
+          }
+          let old_param = {};
+          let new_param = {};
+          o2.map((value) => {
+            old_param[value['key']] = value['value']
+          })
+
+          n2.map((value) => {
+            new_param[value['key']] = value['value']
+          })
+
+          result.push({
+            column: 'Action params',
+            old: old_param || '',
+            new: new_param || ''
+          })
+        }
+
+      }
+
+      result.map((x) => {
+        for (const [key] of Object.entries(x['old'])) {
+          html += `<li>${key}: ${x['old'][key]} <span class="from-to"> >> </span> ${x['new'][key]}</li>`;
+        }
       })
     }
 

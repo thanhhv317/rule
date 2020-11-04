@@ -11,3 +11,41 @@ th {
     white-space: nowrap;
     text-transform: capitalize;
 }
+
+tr.hide-table-padding td {
+    padding: 0;
+}
+
+.expand-button {
+    position: relative;
+}
+
+.accordion-toggle .expand-button:after {
+    position: absolute;
+    left: .75rem;
+    top: 50%;
+    transform: translate(0, -50%);
+    content: '-';
+    text-decoration: none;
+    -webkit-border-radius: 35px;
+    -moz-border-radius: 35px;
+    border-radius: 35px;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.accordion-toggle.collapsed .expand-button:after {
+    content: '+';
+    text-decoration: none;
+    -webkit-border-radius: 35px;
+    -moz-border-radius: 35px;
+    border-radius: 35px;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
