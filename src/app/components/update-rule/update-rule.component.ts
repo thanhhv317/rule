@@ -343,6 +343,8 @@ export class UpdateRuleComponent implements OnInit {
   }
 
 
+  // action has fee_type and type
+
 
   historyUpdate() {
 
@@ -358,8 +360,12 @@ export class UpdateRuleComponent implements OnInit {
     }, []);
 
     let ruleInfomation = [];
+    let actionList = [];
     columnChange.map((item) => {
-      if (item === "conditions" || item === "event") {
+      if (item === "conditions") {
+        if (_.isEqual(this.oldRule[item], this.currentRule[item])) {
+          return;
+        }
         let tmp: HistoryUpdate = {
           column: item,
           rule_id: this.id,
@@ -372,6 +378,17 @@ export class UpdateRuleComponent implements OnInit {
           ])
         };
         data.push(tmp);
+      }
+      else if (item === "fee_type" || item === "type" || item === "event") {
+        if (_.isEqual(this.oldRule[item], this.currentRule[item])) {
+          return;
+        }
+        let tmp = {
+          column: item,
+          old_value: this.oldRule[item],
+          new_value: this.currentRule[item]
+        };
+        actionList.push(tmp);
       } else {
         let tmp = {
           column: item,
@@ -392,8 +409,15 @@ export class UpdateRuleComponent implements OnInit {
       })
     }
 
-    console.log(data)
-
+    if (!_.isEmpty(actionList)) {
+      data.push({
+        column: 'actions',
+        rule_id: this.id,
+        update_persion: this._cookieService.get('username'),
+        data: JSON.stringify(actionList)
+      })
+    }
+    
     data.map((x) => {
       this._historyService.addData(x).subscribe(
         (data) => {

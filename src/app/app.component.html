@@ -1,36 +1,40 @@
 <div *ngIf="isLogin">
-    <div class="title-icon">
-        <a routerLink="/list" class="title-text">RULE MANAGEMENT</a>
-    </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-        <div class="container">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/list">Home</a>
-                    </li>
-                    <li class="nav-item" *ngIf="level">
-                        <a class="nav-link" routerLink="/create">Create</a>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          {{username}}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" (click)="logout()">Logout</a>
-                        </div>
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/list"> <img class="logo" src="../assets/images//logoFinviet.png" alt=""></a>
+
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <div class="dropdown">
+                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       <img class="icon-user" src="../assets/images/user.png" alt="icon-user"> {{username}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" (click)="logout()">Logout</a>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </nav>
     <br>
+    <div class="container padding-top">
+        <ul class="navbar-nav mr-auto my-row">
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/list">Home</a>
+            </li>
+            <li class="nav-item" *ngIf="level">
+                <a class="nav-link" routerLink="/create">Create</a>
+            </li>
+        </ul>
+    </div>
+
 </div>
 <router-outlet></router-outlet>
 <notifier-container></notifier-container>

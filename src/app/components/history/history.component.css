@@ -2,7 +2,7 @@
     padding-left: 15px;
 }
 
-.from-to {
+::ng-deep .from-to {
     color: #f50909;
     font-weight: 600;
 }
