@@ -34,16 +34,16 @@ export class UpdateRuleComponent implements OnInit {
   public currentRule: BackendRule;
   tData: boolean = false;
   private readonly notifier: NotifierService;
+  updateDisabled = false;
 
   public actionType: ActionType[];
   public listAction = (new Helper).listAction;
   public isFee: Boolean = false;
   public fee_type = [
-    { value: 1, field: 'Phí dịch vụ' },
-    { value: 2, field: 'Phí thanh toán' },
-    { value: 3, field: 'Phí offline' },
+    { value: 1, field: 'Service Fees' },
+    { value: 2, field: 'Payment Fees' },
+    { value: 3, field: 'Offline Fees' },
   ];
-
   public action = [];
 
   oldRule: any;
@@ -306,7 +306,7 @@ export class UpdateRuleComponent implements OnInit {
             this.goHome();
           },
           err => {
-            this.authenticationService.handleLoginSessionExpires();
+            this.notifier.notify("error", "Error, Please try again!");
           }
         );
     } catch (e) {
@@ -337,6 +337,7 @@ export class UpdateRuleComponent implements OnInit {
     this.currentRule.conditions = JSON.stringify(conditions);
     this.currentRule.event = (eventResult);
     this.historyUpdate();
+    this.updateDisabled = true;
     this.updateRule(this.currentRule);
   }
 
@@ -411,7 +412,8 @@ export class UpdateRuleComponent implements OnInit {
         data: JSON.stringify(actionList)
       })
     }
-    
+    console.log(data);
+
     data.map((x) => {
       this._historyService.addData(x).subscribe(
         (data) => {

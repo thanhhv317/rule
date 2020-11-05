@@ -328,7 +328,7 @@ export class CreateComponent implements OnInit {
         this.backendRule.priority = null;
       },
       err => {
-        this.authenticationService.handleLoginSessionExpires();
+        this.notifier.notify("error", 'Error, please try again!');
       })
   }
 

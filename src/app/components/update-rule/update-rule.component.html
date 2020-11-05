@@ -1,7 +1,7 @@
 <div class="container">
     <div class="d-flex flex-row-reverse">
         <button class="btn btn-primary ml-2" (click)="goBack()">BACK</button>
-        <button class="e-btn e-primary e-qbr-button btn btn-update" (click)="getValue()">Update</button>
+        <button class="e-btn e-primary e-qbr-button btn btn-update" (click)="getValue()" [disabled]="updateDisabled">Update</button>
 
     </div>
     <div *ngIf="currentRule !== undefined">
@@ -112,7 +112,7 @@
                     <div class="col-lg-6 col-md-6 col-12">
 
                         <div class="form-group" *ngIf="isFee">
-                            <label class="my-1 mr-2">Loại phí</label>
+                            <label class="my-1 mr-2">Fee type</label>
                             <select class="custom-select" [(ngModel)]="feeTypeSelected" (change)="selectFeeType($event)" name="fee_type">
                                 <option *ngFor="let fee of fee_type" [ngValue]="fee.value">
                                     {{fee.field}}

@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import { Helper } from 'src/app/utils/helper';
+import { CurrencyPipe } from '@angular/common';
 
 export interface ActionChange {
   column: String;
@@ -22,14 +23,15 @@ export class HistoryComponent implements OnInit {
   helper = new Helper();
   public fee_type = [
     'none',
-    'Phí dịch vụ',
-    'Phí thanh toán',
-    'Phí offline',
+    'Service Fees',
+    'Payment Fees',
+    'Offline Fees',
   ];
 
   constructor(
     private _historyService: HistoryService,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
+    private currencyPipe: CurrencyPipe,
   ) { }
 
   ngOnInit(): void {
@@ -186,8 +188,8 @@ export class HistoryComponent implements OnInit {
         if (d.params === undefined || d2.params === undefined) {
           let tmp: ActionChange = {
             column: 'Action params',
-            old: JSON.stringify(d.params, undefined, 3) || '""',
-            new: JSON.stringify(d2.params, undefined, 3) || '""'
+            old: d.params || '""',
+            new: d2.params || '""'
           };
           result.push(tmp);
         } else {
@@ -209,12 +211,10 @@ export class HistoryComponent implements OnInit {
                 if (index > -1) {
                   o2.splice(index, 1);
                 }
-
                 let index2 = n2.indexOf(n[i]);
                 if (index > -1) {
                   n2.splice(index2, 1);
                 }
-
               }
             }
           }
@@ -223,24 +223,31 @@ export class HistoryComponent implements OnInit {
           o2.map((value) => {
             old_param[value['key']] = value['value']
           })
-
           n2.map((value) => {
             new_param[value['key']] = value['value']
           })
-
           result.push({
             column: 'Action params',
             old: old_param || '',
             new: new_param || ''
           })
-        }
 
+        }
       }
 
       result.map((x) => {
-        for (const [key] of Object.entries(x['old'])) {
-          html += `<li>${key}: ${x['old'][key]} <span class="from-to"> >> </span> ${x['new'][key]}</li>`;
-        }
+        if (Object.keys(x['new']).join('').length > Object.keys(x['old']).join('').length) {
+          for (const [key] of Object.entries(x['new'])) {
+            if (x['old'][key] != x['new'][key]) {
+              html += `<li>${key}: ${this.formatNumber(x['old'][key]) || '" "'} <span class="from-to"> >> </span> ${this.formatNumber(x['new'][key]) || '" "'}</li>`;
+            }
+          }
+        } else
+          for (const [key] of Object.entries(x['old'])) {
+            if (x['old'][key] != x['new'][key]) {
+              html += `<li>${key}: ${this.formatNumber(x['old'][key]) || '" "'} <span class="from-to"> >> </span> ${this.formatNumber(x['new'][key]) || '" "'}</li>`;
+            }
+          }
       })
     }
 
@@ -249,6 +256,14 @@ export class HistoryComponent implements OnInit {
 
   getFeeType(fee: any) {
     return this.fee_type[fee];
+  }
+
+  formatNumber(num: any) {
+    let tmp = Number(num);
+    if (tmp > 999) {
+      return this.currencyPipe.transform(tmp.toString().replace(/\D/g, ''), 'VND', '')
+    }
+    return num;
   }
 
 

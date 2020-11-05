@@ -41,7 +41,7 @@ export class AuthenticationService {
   }
 
   public handleLoginSessionExpires() {
-    this._cookieService.deleteAll();
+    this._cookieService.deleteAll('*');
     this.notifier.notify('error', 'Login Session Expires!');
     this._router.navigateByUrl('/login');
   }
